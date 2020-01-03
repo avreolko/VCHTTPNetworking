@@ -1,0 +1,471 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A778A50A23BF8D8000E9A55B /* VCNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A778A50023BF8D8000E9A55B /* VCNetworking.framework */; };
+		A778A50F23BF8D8000E9A55B /* VCNetworkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A50E23BF8D8000E9A55B /* VCNetworkingTests.swift */; };
+		A778A51123BF8D8000E9A55B /* VCNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = A778A50323BF8D8000E9A55B /* VCNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A778A51B23BF8D9400E9A55B /* VCRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A51A23BF8D9400E9A55B /* VCRequestBuilder.swift */; };
+		A778A51D23BF8DA000E9A55B /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A51C23BF8DA000E9A55B /* Request.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A778A50B23BF8D8000E9A55B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A778A4F723BF8D8000E9A55B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A778A4FF23BF8D8000E9A55B;
+			remoteInfo = VCNetworking;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A778A50023BF8D8000E9A55B /* VCNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VCNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A778A50323BF8D8000E9A55B /* VCNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VCNetworking.h; sourceTree = "<group>"; };
+		A778A50423BF8D8000E9A55B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A778A50923BF8D8000E9A55B /* VCNetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VCNetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A778A50E23BF8D8000E9A55B /* VCNetworkingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCNetworkingTests.swift; sourceTree = "<group>"; };
+		A778A51023BF8D8000E9A55B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A778A51A23BF8D9400E9A55B /* VCRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCRequestBuilder.swift; sourceTree = "<group>"; };
+		A778A51C23BF8DA000E9A55B /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A778A4FD23BF8D8000E9A55B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A778A50623BF8D8000E9A55B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A778A50A23BF8D8000E9A55B /* VCNetworking.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A778A4F623BF8D8000E9A55B = {
+			isa = PBXGroup;
+			children = (
+				A778A50223BF8D8000E9A55B /* VCNetworking */,
+				A778A50D23BF8D8000E9A55B /* VCNetworkingTests */,
+				A778A50123BF8D8000E9A55B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A778A50123BF8D8000E9A55B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A778A50023BF8D8000E9A55B /* VCNetworking.framework */,
+				A778A50923BF8D8000E9A55B /* VCNetworkingTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A778A50223BF8D8000E9A55B /* VCNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				A778A50323BF8D8000E9A55B /* VCNetworking.h */,
+				A778A50423BF8D8000E9A55B /* Info.plist */,
+				A778A51A23BF8D9400E9A55B /* VCRequestBuilder.swift */,
+				A778A51C23BF8DA000E9A55B /* Request.swift */,
+			);
+			path = VCNetworking;
+			sourceTree = "<group>";
+		};
+		A778A50D23BF8D8000E9A55B /* VCNetworkingTests */ = {
+			isa = PBXGroup;
+			children = (
+				A778A50E23BF8D8000E9A55B /* VCNetworkingTests.swift */,
+				A778A51023BF8D8000E9A55B /* Info.plist */,
+			);
+			path = VCNetworkingTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		A778A4FB23BF8D8000E9A55B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A778A51123BF8D8000E9A55B /* VCNetworking.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		A778A4FF23BF8D8000E9A55B /* VCNetworking */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A778A51423BF8D8000E9A55B /* Build configuration list for PBXNativeTarget "VCNetworking" */;
+			buildPhases = (
+				A778A4FB23BF8D8000E9A55B /* Headers */,
+				A778A4FC23BF8D8000E9A55B /* Sources */,
+				A778A4FD23BF8D8000E9A55B /* Frameworks */,
+				A778A4FE23BF8D8000E9A55B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VCNetworking;
+			productName = VCNetworking;
+			productReference = A778A50023BF8D8000E9A55B /* VCNetworking.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		A778A50823BF8D8000E9A55B /* VCNetworkingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A778A51723BF8D8000E9A55B /* Build configuration list for PBXNativeTarget "VCNetworkingTests" */;
+			buildPhases = (
+				A778A50523BF8D8000E9A55B /* Sources */,
+				A778A50623BF8D8000E9A55B /* Frameworks */,
+				A778A50723BF8D8000E9A55B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A778A50C23BF8D8000E9A55B /* PBXTargetDependency */,
+			);
+			name = VCNetworkingTests;
+			productName = VCNetworkingTests;
+			productReference = A778A50923BF8D8000E9A55B /* VCNetworkingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A778A4F723BF8D8000E9A55B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1130;
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = "Valentin Cherepyanko";
+				TargetAttributes = {
+					A778A4FF23BF8D8000E9A55B = {
+						CreatedOnToolsVersion = 11.3;
+						LastSwiftMigration = 1130;
+					};
+					A778A50823BF8D8000E9A55B = {
+						CreatedOnToolsVersion = 11.3;
+					};
+				};
+			};
+			buildConfigurationList = A778A4FA23BF8D8000E9A55B /* Build configuration list for PBXProject "VCNetworking" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A778A4F623BF8D8000E9A55B;
+			productRefGroup = A778A50123BF8D8000E9A55B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A778A4FF23BF8D8000E9A55B /* VCNetworking */,
+				A778A50823BF8D8000E9A55B /* VCNetworkingTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A778A4FE23BF8D8000E9A55B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A778A50723BF8D8000E9A55B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A778A4FC23BF8D8000E9A55B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A778A51B23BF8D9400E9A55B /* VCRequestBuilder.swift in Sources */,
+				A778A51D23BF8DA000E9A55B /* Request.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A778A50523BF8D8000E9A55B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A778A50F23BF8D8000E9A55B /* VCNetworkingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A778A50C23BF8D8000E9A55B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A778A4FF23BF8D8000E9A55B /* VCNetworking */;
+			targetProxy = A778A50B23BF8D8000E9A55B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A778A51223BF8D8000E9A55B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		A778A51323BF8D8000E9A55B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		A778A51523BF8D8000E9A55B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = H9P6MMBWDC;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = VCNetworking/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vc.VCNetworking;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A778A51623BF8D8000E9A55B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = H9P6MMBWDC;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = VCNetworking/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vc.VCNetworking;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A778A51823BF8D8000E9A55B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H9P6MMBWDC;
+				INFOPLIST_FILE = VCNetworkingTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vc.VCNetworkingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A778A51923BF8D8000E9A55B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H9P6MMBWDC;
+				INFOPLIST_FILE = VCNetworkingTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vc.VCNetworkingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A778A4FA23BF8D8000E9A55B /* Build configuration list for PBXProject "VCNetworking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A778A51223BF8D8000E9A55B /* Debug */,
+				A778A51323BF8D8000E9A55B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A778A51423BF8D8000E9A55B /* Build configuration list for PBXNativeTarget "VCNetworking" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A778A51523BF8D8000E9A55B /* Debug */,
+				A778A51623BF8D8000E9A55B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A778A51723BF8D8000E9A55B /* Build configuration list for PBXNativeTarget "VCNetworkingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A778A51823BF8D8000E9A55B /* Debug */,
+				A778A51923BF8D8000E9A55B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A778A4F723BF8D8000E9A55B /* Project object */;
+}
