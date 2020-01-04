@@ -11,7 +11,7 @@ import Foundation
 enum RequestError: Error {
     case serviceError(Error)
     case httpError(Int)
-    case decodingError(Error) // user info?
+    case decodingError(Error)
 }
 
 struct Success: Decodable { }
@@ -38,10 +38,11 @@ struct Request<T: Decodable> {
                 return
             }
 
+            guard var data = data else { return assertionFailure("Data is nil") }
+
             // data handling
-            if let data = data {
-                DispatchQueue.main.async { completion(self.decode(data)) }
-            } else { assertionFailure("Data is empty") }
+            if data.isEmpty, T.self == Success.self { data = "{}".data(using: .utf8)! }
+            DispatchQueue.main.async { completion(self.decode(data)) }
         }.resume()
     }
 }

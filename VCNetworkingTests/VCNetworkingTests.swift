@@ -55,18 +55,39 @@ class VCNetworkingTests: XCTestCase {
         XCTAssertTrue(request.request.url!.absoluteString.contains("&"))
     }
 
-    func test_body_encoding() {
+    func test_json_encoding() {
         let request: Request<Success> = self.requestBuilder.jsonEncode(TestQuery.default).build()
         XCTAssertEqual(String(data: request.request.httpBody!, encoding: .utf8), "{\"intValue\":8,\"stringValue\":\"hi\"}")
     }
 
+    func test_form_encoding() {
+        let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
+        XCTAssertEqual(String(data: request.request.httpBody!, encoding: .utf8), "stringValue=hi&intValue=8")
+    }
+
     func test_response_with_real_service() {
         let requestBuilder = VCRequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
-        let postRequest: Request<Success> = requestBuilder.method(.get).build()
+        let request: Request<TestResponse> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting response")
 
-        postRequest.start { result in
+        request.start { result in
+            switch result {
+            case .success: exp.fulfill()
+            case .failure: ()
+            }
+        }
+
+        waitForExpectations(timeout: 3)
+    }
+
+    func test_empty_response() {
+        let requestBuilder = VCRequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
+        let request: Request<Success> = requestBuilder.method(.get).build()
+
+        let exp = expectation(description: "getting another response")
+
+        request.start { result in
             switch result {
             case .success: exp.fulfill()
             case .failure: ()
