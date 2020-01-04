@@ -48,7 +48,7 @@ class VCNetworkingTests: XCTestCase {
     func test_url_encoding() {
         let request: Request<Success> = self.requestBuilder.urlEncode(TestQuery.default).build()
 
-        // because json dictionary is unordered
+        // because dictionary is unordered
         XCTAssertTrue(request.request.url!.absoluteString.contains("https://httpstat.us/?"))
         XCTAssertTrue(request.request.url!.absoluteString.contains("intValue=8"))
         XCTAssertTrue(request.request.url!.absoluteString.contains("stringValue=hi"))
@@ -62,7 +62,12 @@ class VCNetworkingTests: XCTestCase {
 
     func test_form_encoding() {
         let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
-        XCTAssertEqual(String(data: request.request.httpBody!, encoding: .utf8), "stringValue=hi&intValue=8")
+        let bodyString = String(data: request.request.httpBody!, encoding: .utf8)!
+
+        // because dictionary is unordered
+        XCTAssertTrue(bodyString.contains("intValue=8"))
+        XCTAssertTrue(bodyString.contains("stringValue=hi"))
+        XCTAssertTrue(bodyString.contains("&"))
     }
 
     func test_response_with_real_service() {

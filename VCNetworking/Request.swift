@@ -12,6 +12,7 @@ enum RequestError: Error {
     case serviceError(Error)
     case httpError(Int)
     case decodingError(Error)
+    case unexpectedEmptyDataError
 }
 
 struct Success: Decodable { }
@@ -24,25 +25,32 @@ struct Request<T: Decodable> {
     func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
         self.session.dataTask(with: request) { (data, response, error) in
 
+            let completeInMainThread: (Result<T, RequestError>) -> Void = { result in
+                DispatchQueue.main.async { completion(result) }
+            }
+
             // service error handling
             if let error = error {
                 let serviceError = RequestError.serviceError(error)
-                DispatchQueue.main.async { completion(.failure(serviceError)) }
+                completeInMainThread(.failure(serviceError))
                 return
             }
 
             // http error
             if let httpResponse = response as? HTTPURLResponse,
                 (300 ... 599) ~= httpResponse.statusCode {
-                DispatchQueue.main.async { completion(.failure(.httpError(httpResponse.statusCode))) }
+                completeInMainThread(.failure(.httpError(httpResponse.statusCode)))
                 return
             }
 
-            guard var data = data else { return assertionFailure("Data is nil") }
+            guard var data = data else {
+                completeInMainThread(.failure(.unexpectedEmptyDataError))
+                return assertionFailure("Data is nil")
+            }
 
             // data handling
             if data.isEmpty, T.self == Success.self { data = "{}".data(using: .utf8)! }
-            DispatchQueue.main.async { completion(self.decode(data)) }
+            completeInMainThread(self.decode(data))
         }.resume()
     }
 }
