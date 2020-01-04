@@ -16,12 +16,12 @@ enum RequestError: Error {
 
 struct Success: Decodable { }
 
-struct Request {
+struct Request<T: Decodable> {
 
     let request: URLRequest
     let session: URLSession
 
-    func start<T: Decodable>(_ completion: @escaping (Result<T, RequestError>) -> Void) {
+    func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
         self.session.dataTask(with: request) { (data, response, error) in
 
             // service error handling

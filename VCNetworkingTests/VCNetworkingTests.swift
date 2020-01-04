@@ -37,16 +37,16 @@ class VCNetworkingTests: XCTestCase {
     }
 
     func test_http_methods() {
-        let getRequest = self.requestBuilder.method(.get).build()
+        let getRequest: Request<Success> = self.requestBuilder.method(.get).build()
         XCTAssertEqual(getRequest.request.httpMethod, "GET")
-        let postRequest = self.requestBuilder.method(.post).build()
+        let postRequest: Request<Success> = self.requestBuilder.method(.post).build()
         XCTAssertEqual(postRequest.request.httpMethod, "POST")
-        let deleteRequest = self.requestBuilder.method(.delete).build()
+        let deleteRequest: Request<Success> = self.requestBuilder.method(.delete).build()
         XCTAssertEqual(deleteRequest.request.httpMethod, "DELETE")
     }
 
     func test_url_encoding() {
-        let request = self.requestBuilder.urlEncode(TestQuery.default).build()
+        let request: Request<Success> = self.requestBuilder.urlEncode(TestQuery.default).build()
 
         // because json dictionary is unordered
         XCTAssertTrue(request.request.url!.absoluteString.contains("https://httpstat.us/?"))
@@ -56,17 +56,17 @@ class VCNetworkingTests: XCTestCase {
     }
 
     func test_body_encoding() {
-        let request = self.requestBuilder.jsonEncode(TestQuery.default).build()
+        let request: Request<Success> = self.requestBuilder.jsonEncode(TestQuery.default).build()
         XCTAssertEqual(String(data: request.request.httpBody!, encoding: .utf8), "{\"intValue\":8,\"stringValue\":\"hi\"}")
     }
 
     func test_response_with_real_service() {
         let requestBuilder = VCRequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
-        let postRequest = requestBuilder.method(.get).build()
+        let postRequest: Request<Success> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting response")
 
-        postRequest.start { (result: Result<TestResponse, RequestError>) in
+        postRequest.start { result in
             switch result {
             case .success: exp.fulfill()
             case .failure: ()

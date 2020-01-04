@@ -85,7 +85,7 @@ final class VCRequestBuilder {
 
     //    func emulationMode() -> Self { return self } // TODO
 
-    func build() -> Request {
+    func build<T: Decodable>() -> Request<T> {
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)
