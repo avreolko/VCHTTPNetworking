@@ -30,39 +30,50 @@ struct TestResponse: Decodable {
 
 class VCNetworkingTests: XCTestCase {
 
-    var requestBuilder: VCRequestBuilder!
+    var requestBuilder: RequestBuilder!
 
     override func setUp() {
-        self.requestBuilder = VCRequestBuilder(baseURL: URL(string: "https://httpstat.us")!)
+        let bundlePath = Bundle(for: VCNetworkingTests.self).path(forResource: "Stubs", ofType: ".bundle")!
+        let bundle = Bundle(path: bundlePath)
+
+        self.requestBuilder = RequestBuilder(baseURL: URL(string: "https://httpstat.us")!,
+                                               stubs: bundle)
     }
 
     func test_http_methods() {
+        let mapToUrlRequest: (Request<Success>) -> URLRequest = { request in
+            return (request.dataTask as! DataTask).request
+        }
+
         let getRequest: Request<Success> = self.requestBuilder.method(.get).build()
-        XCTAssertEqual(getRequest.request.httpMethod, "GET")
+        XCTAssertEqual(mapToUrlRequest(getRequest).httpMethod, "GET")
         let postRequest: Request<Success> = self.requestBuilder.method(.post).build()
-        XCTAssertEqual(postRequest.request.httpMethod, "POST")
+        XCTAssertEqual(mapToUrlRequest(postRequest).httpMethod, "POST")
         let deleteRequest: Request<Success> = self.requestBuilder.method(.delete).build()
-        XCTAssertEqual(deleteRequest.request.httpMethod, "DELETE")
+        XCTAssertEqual(mapToUrlRequest(deleteRequest).httpMethod, "DELETE")
     }
 
     func test_url_encoding() {
         let request: Request<Success> = self.requestBuilder.urlEncode(TestQuery.default).build()
+        let urlRequest = (request.dataTask as! DataTask).request
 
         // because dictionary is unordered
-        XCTAssertTrue(request.request.url!.absoluteString.contains("https://httpstat.us/?"))
-        XCTAssertTrue(request.request.url!.absoluteString.contains("intValue=8"))
-        XCTAssertTrue(request.request.url!.absoluteString.contains("stringValue=hi"))
-        XCTAssertTrue(request.request.url!.absoluteString.contains("&"))
+        XCTAssertTrue(urlRequest.url!.absoluteString.contains("https://httpstat.us/?"))
+        XCTAssertTrue(urlRequest.url!.absoluteString.contains("intValue=8"))
+        XCTAssertTrue(urlRequest.url!.absoluteString.contains("stringValue=hi"))
+        XCTAssertTrue(urlRequest.url!.absoluteString.contains("&"))
     }
 
     func test_json_encoding() {
         let request: Request<Success> = self.requestBuilder.jsonEncode(TestQuery.default).build()
-        XCTAssertEqual(String(data: request.request.httpBody!, encoding: .utf8), "{\"intValue\":8,\"stringValue\":\"hi\"}")
+        let urlRequest = (request.dataTask as! DataTask).request
+        XCTAssertEqual(String(data: urlRequest.httpBody!, encoding: .utf8)!, "{\"intValue\":8,\"stringValue\":\"hi\"}")
     }
 
     func test_form_encoding() {
         let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
-        let bodyString = String(data: request.request.httpBody!, encoding: .utf8)!
+        let urlRequest = (request.dataTask as! DataTask).request
+        let bodyString = String(data: urlRequest.httpBody!, encoding: .utf8)!
 
         // because dictionary is unordered
         XCTAssertTrue(bodyString.contains("intValue=8"))
@@ -71,7 +82,7 @@ class VCNetworkingTests: XCTestCase {
     }
 
     func test_response_with_real_service() {
-        let requestBuilder = VCRequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
         let request: Request<TestResponse> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting response")
@@ -87,7 +98,7 @@ class VCNetworkingTests: XCTestCase {
     }
 
     func test_empty_response() {
-        let requestBuilder = VCRequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
         let request: Request<Success> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting another response")
@@ -100,5 +111,28 @@ class VCNetworkingTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 3)
+    }
+
+    func test_mocking() {
+
+        struct MockedResponse: Decodable {
+            let some: Int
+        }
+
+        let request: Request<MockedResponse> =
+            self.requestBuilder
+                .mockResponse(with: "mock")
+                .build()
+
+        let exp = expectation(description: "getting mocked response")
+
+        request.start { result in
+            switch result {
+            case .success: exp.fulfill()
+            case .failure: ()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
     }
 }

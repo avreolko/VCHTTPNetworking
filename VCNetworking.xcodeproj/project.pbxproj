@@ -10,8 +10,10 @@
 		A778A50A23BF8D8000E9A55B /* VCNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A778A50023BF8D8000E9A55B /* VCNetworking.framework */; };
 		A778A50F23BF8D8000E9A55B /* VCNetworkingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A50E23BF8D8000E9A55B /* VCNetworkingTests.swift */; };
 		A778A51123BF8D8000E9A55B /* VCNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = A778A50323BF8D8000E9A55B /* VCNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A778A51B23BF8D9400E9A55B /* VCRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A51A23BF8D9400E9A55B /* VCRequestBuilder.swift */; };
+		A778A51B23BF8D9400E9A55B /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A51A23BF8D9400E9A55B /* RequestBuilder.swift */; };
 		A778A51D23BF8DA000E9A55B /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = A778A51C23BF8DA000E9A55B /* Request.swift */; };
+		A778A9D123C212C400E9A55B /* Stubs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A778A9CF23C2120000E9A55B /* Stubs.bundle */; };
+		A789E30823C21DED00C3E730 /* DataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789E30723C21DED00C3E730 /* DataTask.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,8 +33,10 @@
 		A778A50923BF8D8000E9A55B /* VCNetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VCNetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A778A50E23BF8D8000E9A55B /* VCNetworkingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCNetworkingTests.swift; sourceTree = "<group>"; };
 		A778A51023BF8D8000E9A55B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A778A51A23BF8D9400E9A55B /* VCRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCRequestBuilder.swift; sourceTree = "<group>"; };
+		A778A51A23BF8D9400E9A55B /* RequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		A778A51C23BF8DA000E9A55B /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		A778A9CF23C2120000E9A55B /* Stubs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Stubs.bundle; sourceTree = "<group>"; };
+		A789E30723C21DED00C3E730 /* DataTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTask.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +81,8 @@
 			children = (
 				A778A50323BF8D8000E9A55B /* VCNetworking.h */,
 				A778A50423BF8D8000E9A55B /* Info.plist */,
-				A778A51A23BF8D9400E9A55B /* VCRequestBuilder.swift */,
+				A778A51A23BF8D9400E9A55B /* RequestBuilder.swift */,
+				A789E30723C21DED00C3E730 /* DataTask.swift */,
 				A778A51C23BF8DA000E9A55B /* Request.swift */,
 			);
 			path = VCNetworking;
@@ -87,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				A778A50E23BF8D8000E9A55B /* VCNetworkingTests.swift */,
+				A778A9CF23C2120000E9A55B /* Stubs.bundle */,
 				A778A51023BF8D8000E9A55B /* Info.plist */,
 			);
 			path = VCNetworkingTests;
@@ -192,6 +198,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A778A9D123C212C400E9A55B /* Stubs.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,7 +209,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A778A51B23BF8D9400E9A55B /* VCRequestBuilder.swift in Sources */,
+				A789E30823C21DED00C3E730 /* DataTask.swift in Sources */,
+				A778A51B23BF8D9400E9A55B /* RequestBuilder.swift in Sources */,
 				A778A51D23BF8DA000E9A55B /* Request.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

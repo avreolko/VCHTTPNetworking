@@ -17,13 +17,12 @@ enum RequestError: Error {
 
 struct Success: Decodable { }
 
-struct Request<T: Decodable> {
+public struct Request<T: Decodable> {
 
-    let request: URLRequest
-    let session: URLSession
+    let dataTask: IDataTask
 
     func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
-        self.session.dataTask(with: request) { (data, response, error) in
+        self.dataTask.start { (data, response, error) in
 
             let completeInMainThread: (Result<T, RequestError>) -> Void = { result in
                 DispatchQueue.main.async { completion(result) }
@@ -43,15 +42,15 @@ struct Request<T: Decodable> {
                 return
             }
 
+            // data handling
             guard var data = data else {
                 completeInMainThread(.failure(.unexpectedEmptyDataError))
                 return assertionFailure("Data is nil")
             }
 
-            // data handling
             if data.isEmpty, T.self == Success.self { data = "{}".data(using: .utf8)! }
             completeInMainThread(self.decode(data))
-        }.resume()
+        }
     }
 }
 

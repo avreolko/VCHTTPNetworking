@@ -1,5 +1,5 @@
 //
-//  VCRequestBuilder.swift
+//  RequestBuilder.swift
 //  VCNetworking
 //
 //  Created by Valentin Cherepyanko on 03.01.2020.
@@ -13,24 +13,35 @@ public enum HTTPMethod: String
     case get = "GET"
     case post = "POST"
     case delete = "DELETE"
+    case put = "PUT"
 }
 
-final class VCRequestBuilder {
+final class RequestBuilder {
 
     struct BuildInfo {
+
+        enum Mocking {
+            case none
+            case some(filename: String)
+        }
+
         var url: URL
         var method: HTTPMethod = .get
         var headers: [String: String] = [:]
         var encodedBody: Data?
         var encodedPath: String = ""
+        var mocking: Mocking = .none
     }
 
     private let baseURL: URL
     private let session = URLSession(configuration: .default)
+    private let stubs: Bundle?
+
     private var buildInfo: BuildInfo
 
-    init(baseURL: URL) {
+    init(baseURL: URL, stubs: Bundle? = nil) {
         self.baseURL = baseURL
+        self.stubs = stubs
         self.buildInfo = BuildInfo(url: self.baseURL)
     }
 
@@ -83,7 +94,10 @@ final class VCRequestBuilder {
         return self
     }
 
-    //    func emulationMode() -> Self { return self } // TODO
+    func mockResponse(with jsonFilename: String) -> Self {
+        self.buildInfo.mocking = .some(filename: jsonFilename)
+        return self
+    }
 
     func build<T: Decodable>() -> Request<T> {
 
@@ -97,7 +111,14 @@ final class VCRequestBuilder {
             request.addValue(value, forHTTPHeaderField: key)
         }
 
-        return Request(request: request, session: self.session)
+        let makeDataTask: () -> IDataTask = {
+            switch self.buildInfo.mocking {
+            case .none: return DataTask(request: request, session: self.session)
+            case .some(let filename): return MockedDataTask(filename: filename, stubs: self.stubs)
+            }
+        }
+
+        return Request(dataTask: makeDataTask())
     }
 }
 
