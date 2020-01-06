@@ -16,9 +16,9 @@ public enum HTTPMethod: String
     case put = "PUT"
 }
 
-final class RequestBuilder {
+public final class RequestBuilder {
 
-    struct BuildInfo {
+    private struct BuildInfo {
 
         enum Mocking {
             case none
@@ -39,44 +39,44 @@ final class RequestBuilder {
 
     private var buildInfo: BuildInfo
 
-    init(baseURL: URL, stubs: Bundle? = nil) {
+    public init(baseURL: URL, stubs: Bundle? = nil) {
         self.baseURL = baseURL
         self.stubs = stubs
         self.buildInfo = BuildInfo(url: self.baseURL)
     }
 
-    func reset() {
+    public func reset() {
         self.buildInfo = BuildInfo(url: self.baseURL)
     }
 
-    func method(_ method: HTTPMethod) -> Self {
+    public func method(_ method: HTTPMethod) -> Self {
         self.buildInfo.method = method
         return self
     }
 
-    func path(_ path: String) -> Self {
+    public func path(_ path: String) -> Self {
         self.buildInfo.url.appendPathComponent(path)
         return self
     }
 
-    func headers(_ headers: [String: String]) -> Self {
+    public func headers(_ headers: [String: String]) -> Self {
         self.buildInfo.headers.merge(headers) { (_, new) in new }
         return self
     }
 
-    func formEncode<T: Encodable>(_ query: T) -> Self {
+    public func formEncode<T: Encodable>(_ query: T) -> Self {
         self.buildInfo.headers["Content-Type"] = "application/x-www-form-urlencoded forHTTPHeaderField"
         self.buildInfo.encodedBody = query.urlEncoded?.data(using: .utf8)
         return self
     }
 
-    func jsonEncode<T: Encodable>(_ query: T) -> Self {
+    public func jsonEncode<T: Encodable>(_ query: T) -> Self {
         self.buildInfo.headers["Content-Type"] = "application/json"
         self.buildInfo.encodedBody = try? JSONEncoder().encode(query)
         return self
     }
 
-    func urlEncode<T: Encodable>(_ query: T) -> Self {
+    public func urlEncode<T: Encodable>(_ query: T) -> Self {
         guard let dict = query.dictionary else {
             return self
         }
@@ -94,12 +94,12 @@ final class RequestBuilder {
         return self
     }
 
-    func mockResponse(with jsonFilename: String) -> Self {
+    public func mockResponse(with jsonFilename: String) -> Self {
         self.buildInfo.mocking = .some(filename: jsonFilename)
         return self
     }
 
-    func build<T: Decodable>() -> Request<T> {
+    public func build<T: Decodable>() -> Request<T> {
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)

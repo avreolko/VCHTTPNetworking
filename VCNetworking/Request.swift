@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum RequestError: Error {
+public enum RequestError: Error {
     case serviceError(Error)
     case httpError(Int)
     case decodingError(Error)
@@ -21,7 +21,7 @@ public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
 
-    func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
+    public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
         self.dataTask.start { (data, response, error) in
 
             let completeInMainThread: (Result<T, RequestError>) -> Void = { result in
