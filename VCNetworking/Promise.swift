@@ -8,6 +8,8 @@
 
 public class Promise<Value> {
 
+    public init() { }
+
     public var result: Result<Value, RequestError>? {
         didSet { self.result.map(report) }
     }
