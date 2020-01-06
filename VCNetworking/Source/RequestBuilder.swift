@@ -36,46 +36,56 @@ public final class RequestBuilder {
     private let baseURL: URL
     private let session = URLSession(configuration: .default)
     private let stubs: Bundle?
+    private let resetAfterBuilding: Bool
 
     private var buildInfo: BuildInfo
 
-    public init(baseURL: URL, stubs: Bundle? = nil) {
+    public init(baseURL: URL, stubs: Bundle? = nil, resetAfterBuilding: Bool = true) {
         self.baseURL = baseURL
         self.stubs = stubs
         self.buildInfo = BuildInfo(url: self.baseURL)
+        self.resetAfterBuilding = resetAfterBuilding
     }
 
-    public func reset() {
+    @discardableResult
+    public func reset() -> Self {
         self.buildInfo = BuildInfo(url: self.baseURL)
+        return self
     }
 
+    @discardableResult
     public func method(_ method: HTTPMethod) -> Self {
         self.buildInfo.method = method
         return self
     }
 
+    @discardableResult
     public func path(_ path: String) -> Self {
         self.buildInfo.url.appendPathComponent(path)
         return self
     }
 
+    @discardableResult
     public func headers(_ headers: [String: String]) -> Self {
         self.buildInfo.headers.merge(headers) { (_, new) in new }
         return self
     }
 
+    @discardableResult
     public func formEncode<T: Encodable>(_ query: T) -> Self {
         self.buildInfo.headers["Content-Type"] = "application/x-www-form-urlencoded forHTTPHeaderField"
         self.buildInfo.encodedBody = query.urlEncoded?.data(using: .utf8)
         return self
     }
 
+    @discardableResult
     public func jsonEncode<T: Encodable>(_ query: T) -> Self {
         self.buildInfo.headers["Content-Type"] = "application/json"
         self.buildInfo.encodedBody = try? JSONEncoder().encode(query)
         return self
     }
 
+    @discardableResult
     public func urlEncode<T: Encodable>(_ query: T) -> Self {
         guard let dict = query.dictionary else {
             return self
@@ -94,12 +104,16 @@ public final class RequestBuilder {
         return self
     }
 
+    @discardableResult
     public func mockResponse(with jsonFilename: String) -> Self {
         self.buildInfo.mocking = .some(filename: jsonFilename)
         return self
     }
 
     public func build<T: Decodable>() -> Request<T> {
+        defer {
+            if self.resetAfterBuilding { self.reset() }
+        }
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)

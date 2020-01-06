@@ -83,10 +83,7 @@
 			children = (
 				A778A50323BF8D8000E9A55B /* VCNetworking.h */,
 				A778A50423BF8D8000E9A55B /* Info.plist */,
-				A778A51A23BF8D9400E9A55B /* RequestBuilder.swift */,
-				A789E30723C21DED00C3E730 /* DataTask.swift */,
-				A778A51C23BF8DA000E9A55B /* Request.swift */,
-				A789E36123C351B800C3E730 /* Promise.swift */,
+				A789E5AE23C3700000C3E730 /* Source */,
 			);
 			path = VCNetworking;
 			sourceTree = "<group>";
@@ -99,6 +96,17 @@
 				A778A51023BF8D8000E9A55B /* Info.plist */,
 			);
 			path = VCNetworkingTests;
+			sourceTree = "<group>";
+		};
+		A789E5AE23C3700000C3E730 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				A778A51A23BF8D9400E9A55B /* RequestBuilder.swift */,
+				A789E30723C21DED00C3E730 /* DataTask.swift */,
+				A778A51C23BF8DA000E9A55B /* Request.swift */,
+				A789E36123C351B800C3E730 /* Promise.swift */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
