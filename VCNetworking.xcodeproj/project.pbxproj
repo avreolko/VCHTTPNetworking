@@ -15,6 +15,7 @@
 		A778A9D123C212C400E9A55B /* Stubs.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A778A9CF23C2120000E9A55B /* Stubs.bundle */; };
 		A789E30823C21DED00C3E730 /* DataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789E30723C21DED00C3E730 /* DataTask.swift */; };
 		A789E36223C351B800C3E730 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789E36123C351B800C3E730 /* Promise.swift */; };
+		A789E5B123C5B61F00C3E730 /* Promise+Then.swift in Sources */ = {isa = PBXBuildFile; fileRef = A789E5B023C5B61F00C3E730 /* Promise+Then.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		A778A9CF23C2120000E9A55B /* Stubs.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Stubs.bundle; sourceTree = "<group>"; };
 		A789E30723C21DED00C3E730 /* DataTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTask.swift; sourceTree = "<group>"; };
 		A789E36123C351B800C3E730 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		A789E5B023C5B61F00C3E730 /* Promise+Then.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+Then.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,12 +103,21 @@
 		A789E5AE23C3700000C3E730 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				A789E5AF23C5B61300C3E730 /* Promises */,
 				A778A51A23BF8D9400E9A55B /* RequestBuilder.swift */,
 				A789E30723C21DED00C3E730 /* DataTask.swift */,
 				A778A51C23BF8DA000E9A55B /* Request.swift */,
-				A789E36123C351B800C3E730 /* Promise.swift */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		A789E5AF23C5B61300C3E730 /* Promises */ = {
+			isa = PBXGroup;
+			children = (
+				A789E36123C351B800C3E730 /* Promise.swift */,
+				A789E5B023C5B61F00C3E730 /* Promise+Then.swift */,
+			);
+			path = Promises;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,6 +231,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A789E5B123C5B61F00C3E730 /* Promise+Then.swift in Sources */,
 				A789E30823C21DED00C3E730 /* DataTask.swift in Sources */,
 				A778A51B23BF8D9400E9A55B /* RequestBuilder.swift in Sources */,
 				A778A51D23BF8DA000E9A55B /* Request.swift in Sources */,

@@ -22,7 +22,12 @@ public struct Request<T: Decodable> {
     let dataTask: IDataTask
 
     public func start(with promise: Promise<T>) {
-        self.start { promise.result = $0 }
+        self.start { result in
+            switch result {
+            case .success(let value): promise.fulfill(value)
+            case .failure(let error): promise.reject(error)
+            }
+        }
     }
 
     public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
