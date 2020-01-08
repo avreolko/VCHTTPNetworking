@@ -9,9 +9,8 @@
 import Foundation
 
 extension Promise {
-    // flatMap
     @discardableResult
-    public func then<NewValue>(_ onFulfill:@escaping (Value) throws -> Promise<NewValue>) -> Promise<NewValue> {
+    public func thenFlatMap<NewValue>(_ onFulfill:@escaping (Value) throws -> Promise<NewValue>) -> Promise<NewValue> {
 
         return Promise<NewValue>(work: { fulfill, reject in
             self.addCallbacks({ value in
@@ -24,10 +23,9 @@ extension Promise {
         })
     }
 
-    // map
     @discardableResult
-    public func then<NewValue>(_ onFullfill: @escaping (Value) throws -> NewValue) -> Promise<NewValue> {
-        return self.then { (value) -> Promise<NewValue> in
+    public func thenMap<NewValue>(_ onFullfill: @escaping (Value) throws -> NewValue) -> Promise<NewValue> {
+        return self.thenFlatMap { (value) -> Promise<NewValue> in
             do {
                 return Promise<NewValue>(value: try onFullfill(value))
             } catch let error {
@@ -40,6 +38,12 @@ extension Promise {
     public func then(_ fullfill: @escaping (Value) -> Void,
                      _ reject: @escaping (Error) -> Void = { _ in }) -> Promise<Value> {
         self.addCallbacks(fullfill, reject)
+        return self
+    }
+
+    @discardableResult
+    public func then(_ fullfill: @escaping (Value) -> Void) -> Promise<Value> {
+        self.addCallbacks(fullfill, { _ in })
         return self
     }
 }

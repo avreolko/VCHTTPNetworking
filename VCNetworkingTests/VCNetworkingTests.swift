@@ -122,10 +122,8 @@ class VCNetworkingTests: XCTestCase {
         let promise = Promise<TestResponse>()
         request.start(with: promise)
 
-        promise.then { response in
+        promise.then { _ in
             exp.fulfill()
-        }.catch { error in
-            print(error)
         }
 
         waitForExpectations(timeout: 3)
