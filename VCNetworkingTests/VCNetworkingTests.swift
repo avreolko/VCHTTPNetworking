@@ -113,22 +113,6 @@ class VCNetworkingTests: XCTestCase {
         waitForExpectations(timeout: 3)
     }
 
-    func test_promises() {
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
-        let request: Request<TestResponse> = requestBuilder.method(.get).build()
-
-        let exp = expectation(description: "waiting for response")
-
-        let promise = Promise<TestResponse>()
-        request.start(with: promise)
-
-        promise.then { _ in
-            exp.fulfill()
-        }
-
-        waitForExpectations(timeout: 3)
-    }
-
     func test_mocking() {
 
         struct MockedResponse: Decodable {

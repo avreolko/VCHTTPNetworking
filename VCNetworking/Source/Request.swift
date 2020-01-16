@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import VCPromises
 
 public enum RequestError: Error {
     case serviceError(Error)
