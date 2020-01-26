@@ -54,6 +54,16 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func basicAuth(login: String, pass: String) -> Self {
+
+        let data = "\(login):\(pass)".data(using: .utf8)?.base64EncodedData()
+        let base64String: String? = data.map { String(data: $0, encoding: .utf8) } ?? nil
+        base64String.map { self.buildInfo.headers["Authorization"] = "Basic \($0)" }
+
+        return self
+    }
+
+    @discardableResult
     public func method(_ method: HTTPMethod) -> Self {
         self.buildInfo.method = method
         return self

@@ -135,4 +135,14 @@ class VCNetworkingTests: XCTestCase {
 
         waitForExpectations(timeout: 1)
     }
+
+    func test_basic_auth_encoding_header() {
+        let request: Request<TestResponse> =
+            self.requestBuilder
+                .basicAuth(login: "v@d.ru", pass: "1")
+                .build()
+
+        let header = (request.dataTask as! DataTask).request.allHTTPHeaderFields?["Authorization"]
+        XCTAssertEqual(header!, "Basic dkBkLnJ1OjE=")
+    }
 }
