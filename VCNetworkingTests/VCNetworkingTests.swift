@@ -136,7 +136,7 @@ class VCNetworkingTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_basic_auth_encoding_header() {
+    func test_basic_auth() {
         let request: Request<TestResponse> =
             self.requestBuilder
                 .basicAuth(login: "v@d.ru", pass: "1")
@@ -144,5 +144,18 @@ class VCNetworkingTests: XCTestCase {
 
         let header = (request.dataTask as! DataTask).request.allHTTPHeaderFields?["Authorization"]
         XCTAssertEqual(header!, "Basic dkBkLnJ1OjE=")
+    }
+
+    func test_bearer_auth() {
+
+        let token = "faospdfopjsdfpoaisjf"
+
+        let request: Request<TestResponse> =
+            self.requestBuilder
+                .bearerAuth(with: token)
+                .build()
+
+        let header = (request.dataTask as! DataTask).request.allHTTPHeaderFields?["Authorization"]
+        XCTAssertEqual(header!, "Bearer \(token)")
     }
 }

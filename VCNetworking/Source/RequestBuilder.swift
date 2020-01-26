@@ -64,6 +64,12 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func bearerAuth(with token: String) -> Self {
+        self.buildInfo.headers["Authorization"] = "Bearer \(token)"
+        return self
+    }
+
+    @discardableResult
     public func method(_ method: HTTPMethod) -> Self {
         self.buildInfo.method = method
         return self
