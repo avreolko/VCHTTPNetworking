@@ -31,6 +31,12 @@ public struct Request<T: Decodable> {
         }
     }
 
+    public func promise() -> Promise<T> {
+        let promise = Promise<T>()
+        self.start(with: promise)
+        return promise
+    }
+
     public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
         self.dataTask.start { (data, response, error) in
 
