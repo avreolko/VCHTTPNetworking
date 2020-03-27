@@ -16,8 +16,6 @@ public enum RequestError: Error {
     case unexpectedEmptyDataError
 }
 
-public struct Success: Decodable { }
-
 public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
@@ -64,7 +62,9 @@ public struct Request<T: Decodable> {
                 return assertionFailure("Data is nil")
             }
 
-            if data.isEmpty, T.self == Success.self { data = "{}".data(using: .utf8)! }
+            // data post-processing
+            Request.dataHandlers().forEach { data = $0(data) }
+
             completeInMainThread(self.decode(data))
         }
     }

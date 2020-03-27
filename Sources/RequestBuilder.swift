@@ -35,14 +35,12 @@ public final class RequestBuilder {
 
     private let baseURL: URL
     private let session = URLSession(configuration: .default)
-    private let stubs: Bundle?
     private let resetAfterBuilding: Bool
 
     private var buildInfo: BuildInfo
 
-    public init(baseURL: URL, stubs: Bundle? = nil, resetAfterBuilding: Bool = true) {
+    public init(baseURL: URL, resetAfterBuilding: Bool = true) {
         self.baseURL = baseURL
-        self.stubs = stubs
         self.buildInfo = BuildInfo(url: self.baseURL)
         self.resetAfterBuilding = resetAfterBuilding
     }
@@ -144,7 +142,7 @@ public final class RequestBuilder {
         let makeDataTask: () -> IDataTask = {
             switch self.buildInfo.mocking {
             case .none: return DataTask(request: request, session: self.session)
-            case .some(let filename): return MockedDataTask(filename: filename, stubs: self.stubs)
+            case .some(let filename): return MockedDataTask(filename: filename)
             }
         }
 

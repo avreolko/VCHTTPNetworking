@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import VCPromises
 @testable import VCNetworking
 
 struct TestQuery: Encodable {
@@ -28,16 +29,12 @@ struct TestResponse: Decodable {
     let nested: NestedResponse
 }
 
-class VCNetworkingTests: XCTestCase {
+final class VCNetworkingTests: XCTestCase {
 
     var requestBuilder: RequestBuilder!
 
     override func setUp() {
-        let bundlePath = Bundle(for: VCNetworkingTests.self).path(forResource: "Stubs", ofType: ".bundle")!
-        let bundle = Bundle(path: bundlePath)
-
-        self.requestBuilder = RequestBuilder(baseURL: URL(string: "https://httpstat.us")!,
-                                               stubs: bundle)
+        self.requestBuilder = RequestBuilder(baseURL: URL(string: "https://httpstat.us")!)
     }
 
     func test_http_methods() {
@@ -111,29 +108,6 @@ class VCNetworkingTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 3)
-    }
-
-    func test_mocking() {
-
-        struct MockedResponse: Decodable {
-            let some: Int
-        }
-
-        let request: Request<MockedResponse> =
-            self.requestBuilder
-                .mockResponse(with: "mock")
-                .build()
-
-        let exp = expectation(description: "getting mocked response")
-
-        request.start { result in
-            switch result {
-            case .success: exp.fulfill()
-            case .failure: ()
-            }
-        }
-
-        waitForExpectations(timeout: 1)
     }
 
     func test_basic_auth() {

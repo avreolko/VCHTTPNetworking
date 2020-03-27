@@ -1,5 +1,5 @@
 //
-//  MockedURLSession.swift
+//  DataTask.swift
 //  VCNetworking
 //
 //  Created by Valentin Cherepyanko on 05.01.2020.
@@ -15,18 +15,10 @@ protocol IDataTask {
 struct MockedDataTask: IDataTask {
 
     let filename: String
-    let stubs: Bundle?
 
     func start(_ completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        guard
-            let path = stubs?.path(forResource: self.filename, ofType: ".json", inDirectory: ""),
-            let data = try? String(contentsOfFile: path).data(using: .utf8)!
-        else {
-            completion(nil, nil, nil)
-            return
-        }
-
-        completion(data, nil , nil)
+        // to do mocking
+        completion(nil, nil , nil)
     }
 }
 
