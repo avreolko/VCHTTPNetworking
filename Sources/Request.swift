@@ -16,7 +16,7 @@ public enum RequestError: Error {
     case unexpectedEmptyDataError
 }
 
-struct Success: Decodable { }
+public struct Success: Decodable { }
 
 public struct Request<T: Decodable> {
 
