@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import VCPromises
 
 public enum RequestError: Error {
     case serviceError(Error)
@@ -16,24 +15,11 @@ public enum RequestError: Error {
     case unexpectedEmptyDataError
 }
 
+public struct Success: Decodable { }
+
 public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
-
-    public func start(with promise: Promise<T>) {
-        self.start { result in
-            switch result {
-            case .success(let value): promise.fulfill(value)
-            case .failure(let error): promise.reject(error)
-            }
-        }
-    }
-
-    public func promise() -> Promise<T> {
-        let promise = Promise<T>()
-        self.start(with: promise)
-        return promise
-    }
 
     public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
         self.dataTask.start { (data, response, error) in
@@ -50,20 +36,17 @@ public struct Request<T: Decodable> {
             }
 
             // http error
-            if let httpResponse = response as? HTTPURLResponse,
-                (300 ... 599) ~= httpResponse.statusCode {
-                completeInMainThread(.failure(.httpError(httpResponse.statusCode)))
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 200
+            if (300 ... 599) ~= statusCode {
+                completeInMainThread(.failure(.httpError(statusCode)))
                 return
             }
 
             // data handling
-            guard var data = data else {
+            guard let data = data else {
                 completeInMainThread(.failure(.unexpectedEmptyDataError))
                 return assertionFailure("Data is nil")
             }
-
-            // data post-processing
-            Request.dataHandlers().forEach { data = $0(data) }
 
             completeInMainThread(self.decode(data))
         }
@@ -72,6 +55,11 @@ public struct Request<T: Decodable> {
 
 private extension Request {
     func decode<T: Decodable>(_ data: Data) -> Result<T, RequestError> {
+
+        let data = (T.self == Success.self)
+            ? "{}".data(using: .utf8)!
+            : data
+
         let decoder = JSONDecoder()
         do {
             return .success(try decoder.decode(T.self, from: data))
