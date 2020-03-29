@@ -49,7 +49,7 @@ public struct Request<T: Decodable> {
             // http error
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 200
 
-            self.responseCodeActions[statusCode]?.forEach { $0() }
+            self.responseCodeActions[statusCode]?.forEach { action in DispatchQueue.main.async { action() } }
 
             if (300 ... 599) ~= statusCode {
                 completeInMainThread(.failure(.httpError(statusCode)))
