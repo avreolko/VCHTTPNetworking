@@ -39,14 +39,17 @@ public final class RequestBuilder {
     private let session = URLSession(configuration: .default)
 
     private var buildInfo: BuildInfo
-    private var commonApplications: [RequestBuilderApplication]
+    private let commonApplications: [RequestBuilderApplication]
+    private let responseCodeActions: [ResponseCode: [Action]]
 
     public init(baseURL: URL,
-                commonApplications: [RequestBuilderApplication] = []) {
+                commonApplications: [RequestBuilderApplication] = [],
+                responseCodeActions: [ResponseCode: [Action]] = [:]) {
 
         self.baseURL = baseURL
         self.buildInfo = BuildInfo(url: self.baseURL)
         self.commonApplications = commonApplications
+        self.responseCodeActions = responseCodeActions
     }
 
     @discardableResult
@@ -145,7 +148,8 @@ public final class RequestBuilder {
             }
         }
 
-        return Request(dataTask: makeDataTask())
+        return Request(dataTask: makeDataTask(),
+                       responseCodeActions: self.responseCodeActions)
     }
 
     @discardableResult

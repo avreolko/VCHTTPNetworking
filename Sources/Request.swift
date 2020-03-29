@@ -17,9 +17,20 @@ public enum RequestError: Error {
 
 public struct Success: Decodable { public init() { } }
 
+public typealias ResponseCode = Int
+public typealias Action = () -> Void
+
 public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
+    private let responseCodeActions: [ResponseCode: [Action]]
+
+    init(dataTask: IDataTask,
+         responseCodeActions: [ResponseCode: [Action]]) {
+
+        self.dataTask = dataTask
+        self.responseCodeActions = responseCodeActions
+    }
 
     public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
         self.dataTask.start { (data, response, error) in
@@ -37,6 +48,9 @@ public struct Request<T: Decodable> {
 
             // http error
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 200
+
+            self.responseCodeActions[statusCode]?.forEach { $0() }
+
             if (300 ... 599) ~= statusCode {
                 completeInMainThread(.failure(.httpError(statusCode)))
                 return

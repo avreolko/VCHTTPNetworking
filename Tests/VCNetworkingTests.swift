@@ -154,4 +154,19 @@ final class VCNetworkingTests: XCTestCase {
         XCTAssertEqual(headerFrom(request1), headers.values.first!)
         XCTAssertEqual(headerFrom(request2), headers.values.first!)
     }
+
+    func test_response_code_actions() {
+
+        let expectation = self.expectation(description: "getting response")
+
+        let actions = [401: [{ expectation.fulfill() }]]
+
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
+                                            responseCodeActions: actions)
+
+        let request: Request<TestResponse> = requestBuilder.method(.get).build()
+        request.start { _ in }
+
+        waitForExpectations(timeout: 10)
+    }
 }
