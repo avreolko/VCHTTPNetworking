@@ -17,9 +17,6 @@ public enum RequestError: Error {
 
 public struct Success: Decodable { public init() { } }
 
-public typealias ResponseCode = Int
-public typealias Action = () -> Void
-
 public struct Request<T: Decodable> {
 
     let dataTask: IDataTask

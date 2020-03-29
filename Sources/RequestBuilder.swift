@@ -17,6 +17,8 @@ public enum HTTPMethod: String
 }
 
 public typealias RequestBuilderApplication = (RequestBuilder) -> Void
+public typealias ResponseCode = Int
+public typealias Action = () -> Void
 
 public final class RequestBuilder {
 
@@ -39,17 +41,17 @@ public final class RequestBuilder {
     private let session = URLSession(configuration: .default)
 
     private var buildInfo: BuildInfo
-    private let commonApplications: [RequestBuilderApplication]
-    private let responseCodeActionsProvider: () -> [ResponseCode: [Action]]
+    private let applicationsProvider: () -> [RequestBuilderApplication]
+    private let responseActionsProvider: () -> [ResponseCode: [Action]]
 
     public init(baseURL: URL,
-                commonApplications: [RequestBuilderApplication] = [],
-                responseCodeActionsProvider: @escaping () -> [ResponseCode: [Action]] = { [:] }) {
+                applicationsProvider: @escaping () -> [RequestBuilderApplication] = { [] },
+                responseActionsProvider: @escaping () -> [ResponseCode: [Action]] = { [:] }) {
 
         self.baseURL = baseURL
         self.buildInfo = BuildInfo(url: self.baseURL)
-        self.commonApplications = commonApplications
-        self.responseCodeActionsProvider = responseCodeActionsProvider
+        self.applicationsProvider = applicationsProvider
+        self.responseActionsProvider = responseActionsProvider
     }
 
     @discardableResult
@@ -129,7 +131,7 @@ public final class RequestBuilder {
 
         defer { self.reset() }
 
-        self.commonApplications.forEach { $0(self) }
+        self.applicationsProvider().forEach { $0(self) }
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)
@@ -149,7 +151,7 @@ public final class RequestBuilder {
         }
 
         return Request(dataTask: makeDataTask(),
-                       responseCodeActions: self.responseCodeActionsProvider())
+                       responseCodeActions: self.responseActionsProvider())
     }
 
     @discardableResult
