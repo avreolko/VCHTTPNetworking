@@ -16,6 +16,8 @@ public enum HTTPMethod: String
     case put = "PUT"
 }
 
+public typealias RequestBuilderApplication = (RequestBuilder) -> Void
+
 public final class RequestBuilder {
 
     private struct BuildInfo {
@@ -35,20 +37,16 @@ public final class RequestBuilder {
 
     private let baseURL: URL
     private let session = URLSession(configuration: .default)
-    private let resetAfterBuilding: Bool
 
     private var buildInfo: BuildInfo
+    private var commonApplications: [RequestBuilderApplication]
 
-    public init(baseURL: URL, resetAfterBuilding: Bool = true) {
+    public init(baseURL: URL,
+                commonApplications: [RequestBuilderApplication] = []) {
+
         self.baseURL = baseURL
         self.buildInfo = BuildInfo(url: self.baseURL)
-        self.resetAfterBuilding = resetAfterBuilding
-    }
-
-    @discardableResult
-    public func reset() -> Self {
-        self.buildInfo = BuildInfo(url: self.baseURL)
-        return self
+        self.commonApplications = commonApplications
     }
 
     @discardableResult
@@ -125,9 +123,10 @@ public final class RequestBuilder {
     }
 
     public func build<T: Decodable>() -> Request<T> {
-        defer {
-            if self.resetAfterBuilding { self.reset() }
-        }
+
+        defer { self.reset() }
+
+        self.commonApplications.forEach { $0(self) }
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)
@@ -147,6 +146,12 @@ public final class RequestBuilder {
         }
 
         return Request(dataTask: makeDataTask())
+    }
+
+    @discardableResult
+    internal func reset() -> Self {
+        self.buildInfo = BuildInfo(url: self.baseURL)
+        return self
     }
 }
 

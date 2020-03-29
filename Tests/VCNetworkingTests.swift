@@ -131,4 +131,27 @@ final class VCNetworkingTests: XCTestCase {
         let header = (request.dataTask as! DataTask).request.allHTTPHeaderFields?["Authorization"]
         XCTAssertEqual(header!, "Bearer \(token)")
     }
+
+    func test_common_applications() {
+
+        let headers = ["Omae Wa Mou Shindeiru": "Nani?!"]
+
+        let application: RequestBuilderApplication = { builder in
+            builder.headers(headers)
+        }
+
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/")!,
+                                            commonApplications: [application])
+
+        let request1: Request<TestResponse> = requestBuilder.build()
+        requestBuilder.reset()
+        let request2: Request<TestResponse> = requestBuilder.build()
+
+        let headerFrom: (Request<TestResponse>) -> String? = {
+            return ($0.dataTask as! DataTask).request.allHTTPHeaderFields?[headers.keys.first!]
+        }
+
+        XCTAssertEqual(headerFrom(request1), headers.values.first!)
+        XCTAssertEqual(headerFrom(request2), headers.values.first!)
+    }
 }
