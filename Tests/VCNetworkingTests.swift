@@ -159,10 +159,10 @@ final class VCNetworkingTests: XCTestCase {
 
         let expectation = self.expectation(description: "getting response")
 
-        let actions = [401: [{ expectation.fulfill() }]]
+        let actions = { [401: [{ expectation.fulfill() }]] }
 
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
-                                            responseCodeActions: actions)
+                                            responseCodeActionsProvider: actions)
 
         let request: Request<TestResponse> = requestBuilder.method(.get).build()
         request.start { _ in }

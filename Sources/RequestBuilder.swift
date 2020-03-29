@@ -40,16 +40,16 @@ public final class RequestBuilder {
 
     private var buildInfo: BuildInfo
     private let commonApplications: [RequestBuilderApplication]
-    private let responseCodeActions: [ResponseCode: [Action]]
+    private let responseCodeActionsProvider: () -> [ResponseCode: [Action]]
 
     public init(baseURL: URL,
                 commonApplications: [RequestBuilderApplication] = [],
-                responseCodeActions: [ResponseCode: [Action]] = [:]) {
+                responseCodeActionsProvider: @escaping () -> [ResponseCode: [Action]] = { [:] }) {
 
         self.baseURL = baseURL
         self.buildInfo = BuildInfo(url: self.baseURL)
         self.commonApplications = commonApplications
-        self.responseCodeActions = responseCodeActions
+        self.responseCodeActionsProvider = responseCodeActionsProvider
     }
 
     @discardableResult
@@ -149,7 +149,7 @@ public final class RequestBuilder {
         }
 
         return Request(dataTask: makeDataTask(),
-                       responseCodeActions: self.responseCodeActions)
+                       responseCodeActions: self.responseCodeActionsProvider())
     }
 
     @discardableResult
