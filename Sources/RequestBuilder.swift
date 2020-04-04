@@ -16,10 +16,6 @@ public enum HTTPMethod: String
     case put = "PUT"
 }
 
-public typealias RequestBuilderApplication = (RequestBuilder) -> Void
-public typealias ResponseCode = Int
-public typealias Action = () -> Void
-
 public final class RequestBuilder {
 
     private struct BuildInfo {
@@ -42,11 +38,11 @@ public final class RequestBuilder {
 
     private var buildInfo: BuildInfo
     private var applicationsProvider: IRequestBuilderApplicationsProvider?
-    private let responseActionsProvider: () -> [ResponseCode: [Action]]
+    private let responseActionsProvider: IResponseActionsProvider?
 
     public init(baseURL: URL,
                 applicationsProvider: IRequestBuilderApplicationsProvider? = nil,
-                responseActionsProvider: @escaping () -> [ResponseCode: [Action]] = { [:] }) {
+                responseActionsProvider: IResponseActionsProvider? = nil) {
 
         self.baseURL = baseURL
         self.buildInfo = BuildInfo(url: self.baseURL)
@@ -151,7 +147,7 @@ public final class RequestBuilder {
         }
 
         return Request(dataTask: makeDataTask(),
-                       responseCodeActions: self.responseActionsProvider())
+                       responseCodeActions: self.responseActionsProvider?.actions ?? [:])
     }
 
     @discardableResult
