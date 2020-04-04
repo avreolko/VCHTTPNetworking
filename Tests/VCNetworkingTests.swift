@@ -141,7 +141,7 @@ final class VCNetworkingTests: XCTestCase {
         }
 
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/")!,
-                                            applicationsProvider: { [application] })
+                                            applicationsProvider: RequestBuilderApplicationsProviderMock([application]))
 
         let request1: Request<TestResponse> = requestBuilder.build()
         requestBuilder.reset()
@@ -168,5 +168,14 @@ final class VCNetworkingTests: XCTestCase {
         request.start { _ in }
 
         waitForExpectations(timeout: 10)
+    }
+}
+
+private class RequestBuilderApplicationsProviderMock: IRequestBuilderApplicationsProvider {
+
+    let applications: [RequestBuilderApplication]
+
+    init(_ applications: [RequestBuilderApplication]) {
+        self.applications = applications
     }
 }

@@ -41,11 +41,11 @@ public final class RequestBuilder {
     private let session = URLSession(configuration: .default)
 
     private var buildInfo: BuildInfo
-    private let applicationsProvider: () -> [RequestBuilderApplication]
+    private var applicationsProvider: IRequestBuilderApplicationsProvider?
     private let responseActionsProvider: () -> [ResponseCode: [Action]]
 
     public init(baseURL: URL,
-                applicationsProvider: @escaping () -> [RequestBuilderApplication] = { [] },
+                applicationsProvider: IRequestBuilderApplicationsProvider? = nil,
                 responseActionsProvider: @escaping () -> [ResponseCode: [Action]] = { [:] }) {
 
         self.baseURL = baseURL
@@ -131,7 +131,7 @@ public final class RequestBuilder {
 
         defer { self.reset() }
 
-        self.applicationsProvider().forEach { $0(self) }
+        self.applicationsProvider?.applications.forEach { $0(self) }
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)
