@@ -1,7 +1,10 @@
 # VCNetworking
-Simple and declarative builder for your network requests.
+A simple declarative builder for your network requests
 
-## Usage example
+## Installation
+Install with SPM 📦
+
+## Usage
 ```swift
 let requestBuilder = RequestBuilder(baseURL: URL(string: "<some url>")!)
 
@@ -21,8 +24,6 @@ request.start { result in
 }
 ```
 
-Request holds a strong link to himself until response.
+The request holds a strong reference to itself until a response.
 If you need lifecycle management for your async operations, you can use promises.
 
-## Installation
-For now VCNetworking supports installation through SPM 📦
