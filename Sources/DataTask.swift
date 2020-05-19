@@ -14,11 +14,10 @@ protocol IDataTask {
 
 struct MockedDataTask: IDataTask {
 
-    let filename: String
+    let data: Data
 
     func start(_ completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        // to do mocking
-        completion(nil, nil , nil)
+        completion(self.data, nil , nil)
     }
 }
 

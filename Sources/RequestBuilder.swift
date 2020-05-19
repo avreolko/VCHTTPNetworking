@@ -22,7 +22,7 @@ public final class RequestBuilder {
 
         enum Mocking {
             case none
-            case some(filename: String)
+            case some(Data)
         }
 
         var url: URL
@@ -118,8 +118,8 @@ public final class RequestBuilder {
     }
 
     @discardableResult
-    public func mockResponse(with jsonFilename: String) -> Self {
-        self.buildInfo.mocking = .some(filename: jsonFilename)
+    public func mockResponse(with data: Data) -> Self {
+        self.buildInfo.mocking = .some(data)
         return self
     }
 
@@ -142,7 +142,7 @@ public final class RequestBuilder {
         let makeDataTask: () -> IDataTask = {
             switch self.buildInfo.mocking {
             case .none: return DataTask(request: request, session: self.session)
-            case .some(let filename): return MockedDataTask(filename: filename)
+            case .some(let data): return MockedDataTask(data: data)
             }
         }
 

@@ -90,7 +90,7 @@ final class VCNetworkingTests: XCTestCase {
             }
         }
 
-        waitForExpectations(timeout: 3)
+        waitForExpectations(timeout: 1)
     }
 
     func test_empty_response() {
@@ -106,7 +106,7 @@ final class VCNetworkingTests: XCTestCase {
             }
         }
 
-        waitForExpectations(timeout: 3)
+        waitForExpectations(timeout: 1)
     }
 
     func test_basic_auth() {
@@ -167,7 +167,33 @@ final class VCNetworkingTests: XCTestCase {
         let request: Request<TestResponse> = requestBuilder.method(.get).build()
         request.start { _ in }
 
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_mocking() {
+
+        let expectation = self.expectation(description: "getting response")
+
+        let json =
+        """
+        {"intValue": 1, "nested": {"hi": "hi", "hello": 2}}
+        """
+
+        let request: Request<TestResponse> =
+        self.requestBuilder
+            .mockResponse(with: json.data(using: .utf8)!)
+            .build()
+
+        request.start { result in
+            _ = result.map { response in
+                expectation.fulfill()
+                XCTAssertEqual(response.intValue, 1)
+                XCTAssertEqual(response.nested.hello, 2)
+                XCTAssertEqual(response.nested.hi, "hi")
+            }
+        }
+
+        waitForExpectations(timeout: 1)
     }
 }
 
