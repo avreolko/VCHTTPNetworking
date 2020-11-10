@@ -30,7 +30,7 @@ struct TestResponse: Decodable {
 
 final class VCNetworkingTests: XCTestCase {
 
-    var requestBuilder: RequestBuilder!
+    private var requestBuilder: RequestBuilder!
 
     override func setUp() {
         self.requestBuilder = RequestBuilder(baseURL: URL(string: "https://httpstat.us")!)
@@ -130,6 +130,19 @@ final class VCNetworkingTests: XCTestCase {
 
         let header = (request.dataTask as! DataTask).request.allHTTPHeaderFields?["Authorization"]
         XCTAssertEqual(header!, "Bearer \(token)")
+    }
+
+    func test_oauth_auth() {
+
+        let token = "faospdfopjsdfpoaisjf"
+
+        let request: Request<TestResponse> =
+            self.requestBuilder
+                .oAuth(with: token)
+                .build()
+
+        let header = (request.dataTask as! DataTask).request.allHTTPHeaderFields?["Authorization"]
+        XCTAssertEqual(header!, "OAuth \(token)")
     }
 
     func test_common_applications() {

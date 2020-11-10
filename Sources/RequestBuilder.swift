@@ -67,6 +67,12 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func oAuth(with token: String) -> Self {
+        self.buildInfo.headers["Authorization"] = "OAuth \(token)"
+        return self
+    }
+
+    @discardableResult
     public func method(_ method: HTTPMethod) -> Self {
         self.buildInfo.method = method
         return self
