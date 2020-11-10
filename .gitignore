@@ -5,3 +5,4 @@ Package.resolved
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .swiftpm/xcode/package.xcworkspace/xcuserdata/vcherepjanko.xcuserdatad/UserInterfaceState.xcuserstate
 .swiftpm/xcode/xcuserdata/Valentin.xcuserdatad/xcschemes/xcschememanagement.plist
+*.xcuserstate
