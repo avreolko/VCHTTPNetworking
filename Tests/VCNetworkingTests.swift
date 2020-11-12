@@ -30,6 +30,7 @@ struct TestResponse: Decodable {
     let nested: NestedResponse
 }
 
+// MARK: - main tests
 final class VCNetworkingTests: XCTestCase {
 
     private var requestBuilder: RequestBuilder!
@@ -86,38 +87,6 @@ final class VCNetworkingTests: XCTestCase {
         XCTAssertTrue(bodyString.contains("intValue=8"))
         XCTAssertTrue(bodyString.contains("stringValue=hi"))
         XCTAssertTrue(bodyString.contains("&"))
-    }
-
-    func test_response_with_real_service() {
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
-        let request: Request<TestResponse> = requestBuilder.method(.get).build()
-
-        let exp = expectation(description: "getting response")
-
-        request.start { result in
-            switch result {
-            case .success: exp.fulfill()
-            case .failure: ()
-            }
-        }
-
-        waitForExpectations(timeout: 1)
-    }
-
-    func test_empty_response() {
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
-        let request: Request<Success> = requestBuilder.method(.get).build()
-
-        let exp = expectation(description: "getting another response")
-
-        request.start { result in
-            switch result {
-            case .success: exp.fulfill()
-            case .failure: ()
-            }
-        }
-
-        waitForExpectations(timeout: 1)
     }
 
     func test_basic_auth() {
@@ -177,21 +146,6 @@ final class VCNetworkingTests: XCTestCase {
 
         XCTAssertEqual(headerFrom(request1), headers.values.first!)
         XCTAssertEqual(headerFrom(request2), headers.values.first!)
-    }
-
-    func test_response_code_actions() {
-
-        let expectation = self.expectation(description: "getting response")
-
-        let actions = [401: [{ expectation.fulfill() }]]
-
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
-                                            responseActionsProvider: ResponseActionsProviderMock(actions))
-
-        let request: Request<TestResponse> = requestBuilder.method(.get).build()
-        request.start { _ in }
-
-        waitForExpectations(timeout: 1)
     }
 
     func test_mocking() throws {
@@ -280,6 +234,57 @@ final class VCNetworkingTests: XCTestCase {
     }
 }
 
+// MARK: - integration tests
+private extension VCNetworkingTests {
+    func disabled_test_response_with_real_service() {
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
+        let request: Request<TestResponse> = requestBuilder.method(.get).build()
+
+        let exp = expectation(description: "getting response")
+
+        request.start { result in
+            switch result {
+            case .success: exp.fulfill()
+            case .failure: ()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func disabled_test_empty_response() {
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
+        let request: Request<Success> = requestBuilder.method(.get).build()
+
+        let exp = expectation(description: "getting another response")
+
+        request.start { result in
+            switch result {
+            case .success: exp.fulfill()
+            case .failure: ()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func disabled_test_response_code_actions() {
+
+        let expectation = self.expectation(description: "getting response")
+
+        let actions = [401: [{ expectation.fulfill() }]]
+
+        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
+                                            responseActionsProvider: ResponseActionsProviderMock(actions))
+
+        let request: Request<TestResponse> = requestBuilder.method(.get).build()
+        request.start { _ in }
+
+        waitForExpectations(timeout: 1)
+    }
+}
+
+// MARK: - mocks
 private class RequestBuilderApplicationsProviderMock: IRequestBuilderApplicationsProvider {
 
     let applications: [RequestBuilderApplication]
