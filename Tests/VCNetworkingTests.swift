@@ -12,9 +12,11 @@ import XCTest
 struct TestQuery: Encodable {
     let intValue: Int
     let stringValue: String
+    let boolValue: Bool
 
     static let `default` = TestQuery(intValue: 8,
-                                     stringValue: "hi")
+                                     stringValue: "hi",
+                                     boolValue: true)
 }
 
 struct TestResponse: Decodable {
@@ -49,21 +51,30 @@ final class VCNetworkingTests: XCTestCase {
         XCTAssertEqual(mapToUrlRequest(deleteRequest).httpMethod, "DELETE")
     }
 
-    func test_url_encoding() {
+    func test_url_encoding() throws {
         let request: Request<Success> = self.requestBuilder.urlEncode(TestQuery.default).build()
         let urlRequest = (request.dataTask as! DataTask).request
 
         // because dictionary is unordered
-        XCTAssertTrue(urlRequest.url!.absoluteString.contains("https://httpstat.us/?"))
-        XCTAssertTrue(urlRequest.url!.absoluteString.contains("intValue=8"))
-        XCTAssertTrue(urlRequest.url!.absoluteString.contains("stringValue=hi"))
-        XCTAssertTrue(urlRequest.url!.absoluteString.contains("&"))
+        let absolutePath = try XCTUnwrap(urlRequest.url?.absoluteString)
+        XCTAssertTrue(absolutePath.contains("https://httpstat.us/?"))
+        XCTAssertTrue(absolutePath.contains("intValue=8"))
+        XCTAssertTrue(absolutePath.contains("stringValue=hi"))
+        XCTAssertTrue(absolutePath.contains("boolValue=1"))
+        XCTAssertTrue(absolutePath.contains("&"))
     }
 
-    func test_json_encoding() {
+    func test_json_encoding() throws {
         let request: Request<Success> = self.requestBuilder.jsonEncode(TestQuery.default).build()
         let urlRequest = (request.dataTask as! DataTask).request
-        XCTAssertEqual(String(data: urlRequest.httpBody!, encoding: .utf8)!, "{\"intValue\":8,\"stringValue\":\"hi\"}")
+
+        let data = try XCTUnwrap(urlRequest.httpBody)
+        let jsonString = String(data: data, encoding: .utf8)
+
+        XCTAssertEqual(
+            jsonString,
+            "{\"intValue\":8,\"boolValue\":true,\"stringValue\":\"hi\"}"
+        )
     }
 
     func test_form_encoding() {
@@ -183,7 +194,7 @@ final class VCNetworkingTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_mocking() {
+    func test_mocking() throws {
 
         let expectation = self.expectation(description: "getting response")
 
@@ -192,9 +203,11 @@ final class VCNetworkingTests: XCTestCase {
         {"intValue": 1, "nested": {"hi": "hi", "hello": 2}}
         """
 
+        let data = try XCTUnwrap(json.data(using: .utf8))
+
         let request: Request<TestResponse> =
         self.requestBuilder
-            .mockResponse(with: json.data(using: .utf8)!)
+            .mockResponse(data: data)
             .build()
 
         request.start { result in
@@ -203,6 +216,63 @@ final class VCNetworkingTests: XCTestCase {
                 XCTAssertEqual(response.intValue, 1)
                 XCTAssertEqual(response.nested.hello, 2)
                 XCTAssertEqual(response.nested.hi, "hi")
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_request_builder_path() throws {
+        let request: Request<TestResponse> =
+        self.requestBuilder
+            .path("somePath")
+            .build()
+
+        let task = try XCTUnwrap(request.dataTask as? DataTask)
+
+        XCTAssertEqual("https://httpstat.us/somePath/", task.request.url?.absoluteString)
+    }
+
+    func test_service_empty_data_error() {
+        let expectation = self.expectation(description: "getting response")
+
+        let request: Request<TestResponse> =
+        self.requestBuilder
+            .mockResponse(data: nil)
+            .build()
+
+        request.start { result in
+            switch result {
+            case .failure(.unexpectedEmptyDataError):
+                expectation.fulfill()
+            default:
+                XCTFail("Should be error in this case")
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_service_error() {
+        let expectation = self.expectation(description: "getting response")
+
+        enum SomeError: Error {
+            case foo
+        }
+
+        let error = SomeError.foo
+
+        let request: Request<TestResponse> =
+        self.requestBuilder
+            .mockResponse(error: RequestError.serviceError(error))
+            .build()
+
+        request.start { result in
+            switch result {
+            case .failure(.serviceError):
+                expectation.fulfill()
+            default:
+                XCTFail("Should be 400 error in this case")
             }
         }
 

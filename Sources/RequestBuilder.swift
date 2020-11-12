@@ -22,7 +22,7 @@ public final class RequestBuilder {
 
         enum Mocking {
             case none
-            case some(Data)
+            case some(Data?, Error?)
         }
 
         var url: URL
@@ -124,8 +124,8 @@ public final class RequestBuilder {
     }
 
     @discardableResult
-    public func mockResponse(with data: Data) -> Self {
-        self.buildInfo.mocking = .some(data)
+    public func mockResponse(data: Data? = nil, error: Error? = nil) -> Self {
+        self.buildInfo.mocking = .some(data, error)
         return self
     }
 
@@ -148,7 +148,7 @@ public final class RequestBuilder {
         let makeDataTask: () -> IDataTask = {
             switch self.buildInfo.mocking {
             case .none: return DataTask(request: request, session: self.session)
-            case .some(let data): return MockedDataTask(data: data)
+            case .some(let data, let error): return MockedDataTask(data: data, error: error)
             }
         }
 
@@ -174,7 +174,6 @@ private extension Encodable
 
     var urlEncoded: String? {
         guard let dict = self.dictionary else {
-            print("Cannot parse.")
             return nil
         }
 

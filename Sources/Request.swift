@@ -20,6 +20,7 @@ public struct Success: Decodable { public init() { } }
 public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
+
     private let responseCodeActions: [ResponseCode: [Action]]
 
     init(dataTask: IDataTask,
@@ -56,7 +57,7 @@ public struct Request<T: Decodable> {
             // data handling
             guard let data = data else {
                 completeInMainThread(.failure(.unexpectedEmptyDataError))
-                return assertionFailure("Data is nil")
+                return
             }
 
             completeInMainThread(self.decode(data))
