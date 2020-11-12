@@ -11,7 +11,7 @@ import Foundation
 public enum RequestError: Error {
     case serviceError(Error)
     case httpError(Int)
-    case decodingError(Error)
+    case decodingError(Error, Data)
     case unexpectedEmptyDataError
 }
 
@@ -76,7 +76,7 @@ private extension Request {
         do {
             return .success(try decoder.decode(T.self, from: data))
         } catch {
-            return .failure(.decodingError(error))
+            return .failure(.decodingError(error, data))
         }
     }
 }
