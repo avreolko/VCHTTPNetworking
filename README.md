@@ -27,3 +27,5 @@ request.start { result in
 The request holds a strong reference to itself until a response.
 If you need lifecycle management for your async operations, you can use promises.
 
+## License ##
+This project is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
