@@ -30,6 +30,11 @@ struct TestResponse: Decodable {
     let nested: NestedResponse
 }
 
+struct TestAPIError: Decodable {
+    let errorCode: Int
+    let errorMessage: String
+}
+
 // MARK: - main tests
 final class VCNetworkingTests: XCTestCase {
 
@@ -40,20 +45,20 @@ final class VCNetworkingTests: XCTestCase {
     }
 
     func test_http_methods() {
-        let mapToUrlRequest: (Request<Success>) -> URLRequest = { request in
+        let mapToUrlRequest: (Request<Success, TestAPIError>) -> URLRequest = { request in
             return (request.dataTask as! DataTask).request
         }
 
-        let getRequest: Request<Success> = self.requestBuilder.method(.get).build()
+        let getRequest: Request<Success, TestAPIError> = self.requestBuilder.method(.get).build()
         XCTAssertEqual(mapToUrlRequest(getRequest).httpMethod, "GET")
-        let postRequest: Request<Success> = self.requestBuilder.method(.post).build()
+        let postRequest: Request<Success, TestAPIError> = self.requestBuilder.method(.post).build()
         XCTAssertEqual(mapToUrlRequest(postRequest).httpMethod, "POST")
-        let deleteRequest: Request<Success> = self.requestBuilder.method(.delete).build()
+        let deleteRequest: Request<Success, TestAPIError> = self.requestBuilder.method(.delete).build()
         XCTAssertEqual(mapToUrlRequest(deleteRequest).httpMethod, "DELETE")
     }
 
     func test_url_encoding() throws {
-        let request: Request<Success> = self.requestBuilder.urlEncode(TestQuery.default).build()
+        let request: Request<Success, TestAPIError> = self.requestBuilder.urlEncode(TestQuery.default).build()
         let urlRequest = (request.dataTask as! DataTask).request
 
         // because dictionary is unordered
@@ -66,7 +71,7 @@ final class VCNetworkingTests: XCTestCase {
     }
 
     func test_json_encoding() throws {
-        let request: Request<Success> = self.requestBuilder.jsonEncode(TestQuery.default).build()
+        let request: Request<Success, TestAPIError> = self.requestBuilder.jsonEncode(TestQuery.default).build()
         let urlRequest = (request.dataTask as! DataTask).request
 
         let data = try XCTUnwrap(urlRequest.httpBody)
@@ -79,7 +84,7 @@ final class VCNetworkingTests: XCTestCase {
     }
 
     func test_form_encoding() {
-        let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
+        let request: Request<Success, TestAPIError> = self.requestBuilder.formEncode(TestQuery.default).build()
         let urlRequest = (request.dataTask as! DataTask).request
         let bodyString = String(data: urlRequest.httpBody!, encoding: .utf8)!
 
@@ -90,7 +95,7 @@ final class VCNetworkingTests: XCTestCase {
     }
 
     func test_basic_auth() {
-        let request: Request<TestResponse> =
+        let request: Request<Success, TestAPIError> =
             self.requestBuilder
                 .basicAuth(login: "v@d.ru", pass: "1")
                 .build()
@@ -103,7 +108,7 @@ final class VCNetworkingTests: XCTestCase {
 
         let token = "faospdfopjsdfpoaisjf"
 
-        let request: Request<TestResponse> =
+        let request: Request<TestResponse, TestAPIError> =
             self.requestBuilder
                 .bearerAuth(with: token)
                 .build()
@@ -116,7 +121,7 @@ final class VCNetworkingTests: XCTestCase {
 
         let token = "faospdfopjsdfpoaisjf"
 
-        let request: Request<TestResponse> =
+        let request: Request<TestResponse, TestAPIError> =
             self.requestBuilder
                 .oAuth(with: token)
                 .build()
@@ -136,11 +141,11 @@ final class VCNetworkingTests: XCTestCase {
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/")!,
                                             applicationsProvider: RequestBuilderApplicationsProviderMock([application]))
 
-        let request1: Request<TestResponse> = requestBuilder.build()
+        let request1: Request<TestResponse, TestAPIError> = requestBuilder.build()
         requestBuilder.reset()
-        let request2: Request<TestResponse> = requestBuilder.build()
+        let request2: Request<TestResponse, TestAPIError> = requestBuilder.build()
 
-        let headerFrom: (Request<TestResponse>) -> String? = {
+        let headerFrom: (Request<TestResponse, TestAPIError>) -> String? = {
             return ($0.dataTask as! DataTask).request.allHTTPHeaderFields?[headers.keys.first!]
         }
 
@@ -159,7 +164,7 @@ final class VCNetworkingTests: XCTestCase {
 
         let data = try XCTUnwrap(json.data(using: .utf8))
 
-        let request: Request<TestResponse> =
+        let request: Request<TestResponse, TestAPIError> =
         self.requestBuilder
             .mockResponse(data: data)
             .build()
@@ -177,7 +182,7 @@ final class VCNetworkingTests: XCTestCase {
     }
 
     func test_request_builder_path() throws {
-        let request: Request<TestResponse> =
+        let request: Request<TestResponse, TestAPIError> =
         self.requestBuilder
             .path("somePath")
             .build()
@@ -190,7 +195,7 @@ final class VCNetworkingTests: XCTestCase {
     func test_service_empty_data_error() {
         let expectation = self.expectation(description: "getting response")
 
-        let request: Request<TestResponse> =
+        let request: Request<TestResponse, TestAPIError> =
         self.requestBuilder
             .mockResponse(data: nil)
             .build()
@@ -216,9 +221,9 @@ final class VCNetworkingTests: XCTestCase {
 
         let error = SomeError.foo
 
-        let request: Request<TestResponse> =
+        let request: Request<TestResponse, TestAPIError> =
         self.requestBuilder
-            .mockResponse(error: RequestError.serviceError(error))
+            .mockResponse(error: RequestError<TestAPIError>.serviceError(error))
             .build()
 
         request.start { result in
@@ -238,7 +243,7 @@ final class VCNetworkingTests: XCTestCase {
 private extension VCNetworkingTests {
     func disabled_test_response_with_real_service() {
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
-        let request: Request<TestResponse> = requestBuilder.method(.get).build()
+        let request: Request<TestResponse, TestAPIError> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting response")
 
@@ -254,7 +259,7 @@ private extension VCNetworkingTests {
 
     func disabled_test_empty_response() {
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
-        let request: Request<Success> = requestBuilder.method(.get).build()
+        let request: Request<Success, TestAPIError> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting another response")
 
@@ -277,7 +282,7 @@ private extension VCNetworkingTests {
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
                                             responseActionsProvider: ResponseActionsProviderMock(actions))
 
-        let request: Request<TestResponse> = requestBuilder.method(.get).build()
+        let request: Request<TestResponse, TestAPIError> = requestBuilder.method(.get).build()
         request.start { _ in }
 
         waitForExpectations(timeout: 1)

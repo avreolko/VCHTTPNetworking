@@ -129,7 +129,7 @@ public final class RequestBuilder {
         return self
     }
 
-    public func build<T: Decodable>() -> Request<T> {
+    public func build<Response: Decodable, APIError: Decodable>() -> Request<Response, APIError> {
 
         defer { self.reset() }
 

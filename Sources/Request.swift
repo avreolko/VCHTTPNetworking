@@ -8,16 +8,17 @@
 
 import Foundation
 
-public enum RequestError: Error {
+public enum RequestError<APIError>: Error {
     case serviceError(Error)
     case httpError(Int)
     case decodingError(Error, Data)
+    case apiError(APIError)
     case unexpectedEmptyDataError
 }
 
 public struct Success: Decodable { public init() { } }
 
-public struct Request<T: Decodable> {
+public struct Request<Response: Decodable, APIError: Decodable> {
 
     let dataTask: IDataTask
 
@@ -30,16 +31,16 @@ public struct Request<T: Decodable> {
         self.responseCodeActions = responseCodeActions
     }
 
-    public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
+    public func start(_ completion: @escaping (Result<Response, RequestError<APIError>>) -> Void) {
         self.dataTask.start { (data, response, error) in
 
-            let completeInMainThread: (Result<T, RequestError>) -> Void = { result in
+            let completeInMainThread: (Result<Response, RequestError>) -> Void = { result in
                 DispatchQueue.main.async { completion(result) }
             }
 
             // service error handling
             if let error = error {
-                let serviceError = RequestError.serviceError(error)
+                let serviceError = RequestError<APIError>.serviceError(error)
                 completeInMainThread(.failure(serviceError))
                 return
             }
@@ -66,17 +67,24 @@ public struct Request<T: Decodable> {
 }
 
 private extension Request {
-    func decode<T: Decodable>(_ data: Data) -> Result<T, RequestError> {
+    func decode(_ data: Data) -> Result<Response, RequestError<APIError>> {
 
-        let data = (T.self == Success.self)
+        let data = (Response.self == Success.self)
             ? "{}".data(using: .utf8)!
             : data
 
         let decoder = JSONDecoder()
+
         do {
-            return .success(try decoder.decode(T.self, from: data))
+            let response = try decoder.decode(Response.self, from: data)
+            return .success(response)
         } catch {
-            return .failure(.decodingError(error, data))
+            do {
+                let apiError = try decoder.decode(APIError.self, from: data)
+                return .failure(.apiError(apiError))
+            } catch {
+                return .failure(.decodingError(error, data))
+            }
         }
     }
 }
