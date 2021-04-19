@@ -1,4 +1,4 @@
-# VCNetworking
+# VCHTTPNetworking
 A simple declarative builder for your network requests
 
 ## Installation

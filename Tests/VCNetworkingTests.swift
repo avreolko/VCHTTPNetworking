@@ -1,6 +1,6 @@
 //
-//  VCNetworkingTests.swift
-//  VCNetworkingTests
+//  VCHTTPNetworking.swift
+//  VCHTTPNetworking
 //
 //  Created by Valentin Cherepyanko on 03.01.2020.
 //  Copyright © 2020 Valentin Cherepyanko. All rights reserved.
@@ -25,7 +25,7 @@
 //
 
 import XCTest
-@testable import VCNetworking
+@testable import VCHTTPNetworking
 
 struct TestQuery: Encodable {
     let intValue: Int
@@ -49,7 +49,7 @@ struct TestResponse: Decodable {
 }
 
 // MARK: - main tests
-final class VCNetworkingTests: XCTestCase {
+final class VCHTTPNetworkingTests: XCTestCase {
 
     private var requestBuilder: RequestBuilder!
 
@@ -253,7 +253,7 @@ final class VCNetworkingTests: XCTestCase {
 }
 
 // MARK: - integration tests
-private extension VCNetworkingTests {
+private extension VCHTTPNetworkingTests {
     func disabled_test_response_with_real_service() {
         let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
         let request: Request<TestResponse> = requestBuilder.method(.get).build()
