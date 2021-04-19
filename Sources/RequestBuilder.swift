@@ -51,19 +51,27 @@ public final class RequestBuilder {
         var mocking: Mocking = .none
     }
 
-    private let baseURL: URL
     private let session = URLSession(configuration: .default)
 
     private var buildInfo: BuildInfo
-    private var applicationsProvider: IRequestBuilderApplicationsProvider?
+
+    private let baseURL: URL
+    private let encoder: IDataEncoder
+    private let decoder: IDataDecoder
+    private let applicationsProvider: IRequestBuilderApplicationsProvider?
     private let responseActionsProvider: IResponseActionsProvider?
 
     public init(baseURL: URL,
+                encoder: IDataEncoder = JSONEncoder(),
+                decoder: IDataDecoder = JSONDecoder(),
                 applicationsProvider: IRequestBuilderApplicationsProvider? = nil,
                 responseActionsProvider: IResponseActionsProvider? = nil) {
 
+        self.buildInfo = BuildInfo(url: baseURL)
+
         self.baseURL = baseURL
-        self.buildInfo = BuildInfo(url: self.baseURL)
+        self.encoder = encoder
+        self.decoder = decoder
         self.applicationsProvider = applicationsProvider
         self.responseActionsProvider = responseActionsProvider
     }

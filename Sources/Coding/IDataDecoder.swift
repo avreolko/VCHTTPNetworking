@@ -1,8 +1,8 @@
 //
-//  RequestBuilderApplicationsProvider.swift
+//  IDataDecoder.swift
 //  
 //
-//  Created by Черепянко Валентин Александрович on 04/04/2020.
+//  Created by Valentin Cherepyanko on 19.04.2021.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
 //  THE SOFTWARE.
 //
 
-public typealias RequestBuilderApplication = (RequestBuilder) -> Void
+import Foundation
 
-public protocol IRequestBuilderApplicationsProvider: AnyObject {
-    var applications: [RequestBuilderApplication] { get }
+public protocol IDataDecoder {
+    func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T
 }
