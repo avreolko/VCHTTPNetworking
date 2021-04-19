@@ -17,6 +17,16 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>VCHTTPNetworking</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>VCHTTPNetworkingTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>VCNetworking</key>
 		<dict>
 			<key>primary</key>
