@@ -51,8 +51,6 @@ public final class RequestBuilder {
         var mocking: Mocking = .none
     }
 
-    private let session = URLSession(configuration: .default)
-
     private var buildInfo: BuildInfo
 
     private let baseURL: URL
@@ -173,7 +171,7 @@ public final class RequestBuilder {
 
         let makeDataTask: () -> IDataTask = {
             switch self.buildInfo.mocking {
-            case .none: return DataTask(request: request, session: self.session)
+            case .none: return DataTask(request: request)
             case .some(let data, let error): return MockedDataTask(data: data, error: error)
             }
         }

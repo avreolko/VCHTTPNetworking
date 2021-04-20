@@ -40,12 +40,31 @@ struct MockedDataTask: IDataTask {
     }
 }
 
-struct DataTask: IDataTask {
+final class DataTask: IDataTask {
 
-    let request: URLRequest
-    let session: URLSession
+    private lazy var session = URLSession(configuration: .default, delegate: nil, delegateQueue: nil)
+
+    private(set) var request: URLRequest
+    let encodeAction: (() -> Data?)?
+
+    init(request: URLRequest, encodeAction: (() -> Data?)? = nil) {
+
+        self.request = request
+        self.encodeAction = encodeAction
+    }
 
     func start(_ completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
+
+        DispatchQueue.global(qos: .userInitiated).async {
+
+            self.encodeAction.map { self.request.httpBody = $0() }
+
+            self.session.dataTask(with: self.request) { (data, response, error) in
+                completion(data, response, error)
+                self.session.finishTasksAndInvalidate()
+            }.resume()
+        }
+
         self.session.dataTask(with: request) { (data, response, error) in
             completion(data, response, error)
         }.resume()
