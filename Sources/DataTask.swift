@@ -40,17 +40,24 @@ struct MockedDataTask: IDataTask {
     }
 }
 
-final class DataTask: IDataTask {
+final class DataTask: NSObject, IDataTask {
 
-    private lazy var session = URLSession(configuration: .default, delegate: nil, delegateQueue: nil)
+    private lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
     private(set) var request: URLRequest
-    let encodeAction: (() -> Data?)?
+    private let encodeAction: (() -> Data?)?
+    private let pinnedCertificatesProvider: ICertificatesProvider?
+    private let identityProvider: IIdentityProvider?
 
-    init(request: URLRequest, encodeAction: (() -> Data?)? = nil) {
+    init(request: URLRequest,
+         encodeAction: (() -> Data?)? = nil,
+         pinnedCertificatesProvider: ICertificatesProvider? = nil,
+         identityProvider: IIdentityProvider? = nil) {
 
         self.request = request
         self.encodeAction = encodeAction
+        self.pinnedCertificatesProvider = pinnedCertificatesProvider
+        self.identityProvider = identityProvider
     }
 
     func start(_ completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
@@ -64,9 +71,96 @@ final class DataTask: IDataTask {
                 self.session.finishTasksAndInvalidate()
             }.resume()
         }
+    }
+}
 
-        self.session.dataTask(with: request) { (data, response, error) in
-            completion(data, response, error)
-        }.resume()
+// MARK: - URLSessionDelegate
+extension DataTask: URLSessionDelegate {
+
+    func urlSession(_ session: URLSession,
+                    didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+        let authenticationMethod = challenge.protectionSpace.authenticationMethod
+
+        if authenticationMethod == NSURLAuthenticationMethodServerTrust {
+            didReceive(serverTrustChallenge: challenge, completionHandler: completionHandler)
+        } else if authenticationMethod == NSURLAuthenticationMethodClientCertificate {
+            didReceive(clientIdentityChallenge: challenge, completionHandler: completionHandler)
+        } else {
+            completionHandler(.performDefaultHandling, nil)
+        }
+    }
+}
+
+// MARK: - DataTask challenge handle methods
+private extension DataTask {
+
+    func didReceive(serverTrustChallenge challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+        guard let pinnedCertificates = pinnedCertificatesProvider?.certificates,
+              let serverTrust = challenge.protectionSpace.serverTrust else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        if serverTrust.evaluateAllowing(rootCertificates: []) && serverTrust.pin(with: pinnedCertificates) {
+            completionHandler(.useCredential, URLCredential(trust: serverTrust))
+        } else {
+            completionHandler(.cancelAuthenticationChallenge, nil)
+        }
+    }
+
+    func didReceive(clientIdentityChallenge challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+        guard let identityProvider = identityProvider else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        guard let clientIdentity = identityProvider.identity else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        let credential = URLCredential(identity: clientIdentity, certificates: nil, persistence: .forSession)
+        completionHandler(.useCredential, credential)
+    }
+}
+
+// MARK: - SecTrust convenience methods
+private extension SecTrust {
+
+    var allowedTrustTypes: [SecTrustResultType] {
+        [.proceed, .unspecified]
+    }
+
+    func evaluateAllowing(rootCertificates: [SecCertificate]) -> Bool {
+
+        if rootCertificates.count > 0 {
+            var err = SecTrustSetAnchorCertificates(self, rootCertificates as CFArray)
+            guard err == errSecSuccess else { return false }
+
+            err = SecTrustSetAnchorCertificatesOnly(self, false)
+            guard err == errSecSuccess else { return false }
+        }
+
+        return evaluate()
+    }
+
+    func evaluate() -> Bool {
+        var trustResult: SecTrustResultType = .invalid
+        let err = SecTrustEvaluate(self, &trustResult)
+        guard err == errSecSuccess else { return false }
+        return allowedTrustTypes.contains(trustResult)
+    }
+
+    func pin(with localCertificates: [SecCertificate]) -> Bool {
+        guard let remoteCertificate = SecTrustGetCertificateAtIndex(self, 0) else { return true }
+        let remoteCertificateData = SecCertificateCopyData(remoteCertificate) as Data
+        let localCertificatesData = localCertificates.map { SecCertificateCopyData($0) as Data }
+        return localCertificatesData.contains(remoteCertificateData)
     }
 }

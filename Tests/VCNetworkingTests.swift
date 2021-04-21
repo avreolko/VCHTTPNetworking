@@ -84,16 +84,34 @@ final class VCHTTPNetworkingTests: XCTestCase {
     }
 
     func test_json_encoding() throws {
-        let request: Request<Success> = self.requestBuilder.jsonEncode(TestQuery.default).build()
-        let urlRequest = (request.dataTask as! DataTask).request
 
-        let data = try XCTUnwrap(urlRequest.httpBody)
-        let jsonString = String(data: data, encoding: .utf8)
+        let exp = expectation(description: "waiting for request start")
 
-        XCTAssertEqual(
-            jsonString,
-            "{\"intValue\":8,\"boolValue\":true,\"stringValue\":\"hi\"}"
-        )
+        // Arrange
+        let query = TestQuery.default
+
+        // Act
+        let request: Request<Success> = requestBuilder
+            .encode(query)
+            .build()
+
+        request.start { _ in
+
+            exp.fulfill()
+
+            let urlRequest = (request.dataTask as? DataTask)?.request
+
+            // Assert
+            let data = urlRequest?.httpBody
+            let jsonString = data.map { String(data: $0, encoding: .utf8) }
+
+            XCTAssertEqual(
+                jsonString,
+                "{\"intValue\":8,\"boolValue\":true,\"stringValue\":\"hi\"}"
+            )
+        }
+
+        waitForExpectations(timeout: 1)
     }
 
     func test_form_encoding() {

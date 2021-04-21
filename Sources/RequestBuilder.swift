@@ -49,6 +49,9 @@ public final class RequestBuilder {
         var encodedBody: Data?
         var encodedPath: String = ""
         var mocking: Mocking = .none
+        var encodeAction: (() -> Data?)?
+        var identityProvider: IIdentityProvider?
+        var pinnedCertificatesProvider: ICertificatesProvider?
     }
 
     private var buildInfo: BuildInfo
@@ -97,6 +100,18 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func auth(with identityProvider: IIdentityProvider) -> Self {
+        buildInfo.identityProvider = identityProvider
+        return self
+    }
+
+    @discardableResult
+    public func sslPin(with certificatesProvider: ICertificatesProvider) -> Self {
+        buildInfo.pinnedCertificatesProvider = certificatesProvider
+        return self
+    }
+
+    @discardableResult
     public func method(_ method: HTTPMethod) -> Self {
         self.buildInfo.method = method
         return self
@@ -122,9 +137,8 @@ public final class RequestBuilder {
     }
 
     @discardableResult
-    public func jsonEncode<T: Encodable>(_ query: T) -> Self {
-        self.buildInfo.headers["Content-Type"] = "application/json"
-        self.buildInfo.encodedBody = try? JSONEncoder().encode(query)
+    public func encode<T: Encodable>(_ query: T) -> Self {
+        buildInfo.encodeAction = { [encoder] in try? encoder.encode(query) }
         return self
     }
 
@@ -171,8 +185,15 @@ public final class RequestBuilder {
 
         let makeDataTask: () -> IDataTask = {
             switch self.buildInfo.mocking {
-            case .none: return DataTask(request: request)
-            case .some(let data, let error): return MockedDataTask(data: data, error: error)
+            case .none:
+                return DataTask(
+                    request: request,
+                    encodeAction: self.buildInfo.encodeAction,
+                    pinnedCertificatesProvider: self.buildInfo.pinnedCertificatesProvider,
+                    identityProvider: self.buildInfo.identityProvider
+                )
+            case .some(let data, let error):
+                return MockedDataTask(data: data, error: error)
             }
         }
 
