@@ -27,14 +27,17 @@
 import XCTest
 @testable import VCHTTPNetworking
 
-struct TestQuery: Encodable {
+private struct TestQuery: Encodable {
+
     let intValue: Int
     let stringValue: String
     let boolValue: Bool
 
-    static let `default` = TestQuery(intValue: 8,
-                                     stringValue: "hi",
-                                     boolValue: true)
+    static let `default` = TestQuery(
+        intValue: 8,
+        stringValue: "hi",
+        boolValue: true
+    )
 }
 
 struct TestResponse: Decodable {
@@ -54,7 +57,9 @@ final class VCHTTPNetworkingTests: XCTestCase {
     private var requestBuilder: RequestBuilder!
 
     override func setUp() {
-        self.requestBuilder = RequestBuilder(baseURL: URL(string: "https://httpstat.us")!)
+        self.requestBuilder = RequestBuilder(
+            configuration: .init(baseURL: URL(string: "https://httpstat.us")!)
+        )
     }
 
     func test_http_methods() {
@@ -169,8 +174,12 @@ final class VCHTTPNetworkingTests: XCTestCase {
             builder.headers(headers)
         }
 
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/")!,
-                                            applicationsProvider: RequestBuilderApplicationsProviderMock([application]))
+        let requestBuilder = RequestBuilder(
+            configuration: .init(
+                baseURL: URL(string: "http://www.mocky.io/")!,
+                applicationsProvider: RequestBuilderApplicationsProviderMock([application])
+            )
+        )
 
         let request1: Request<TestResponse> = requestBuilder.build()
         requestBuilder.reset()
@@ -271,9 +280,14 @@ final class VCHTTPNetworkingTests: XCTestCase {
 }
 
 // MARK: - integration tests
-private extension VCHTTPNetworkingTests {
+extension VCHTTPNetworkingTests {
+
     func disabled_test_response_with_real_service() {
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
+
+        let requestBuilder = RequestBuilder(
+            configuration: .init(baseURL: URL(string: "http://www.mocky.io/v2/5e1004623500006c001e687b")!)
+        )
+
         let request: Request<TestResponse> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting response")
@@ -289,7 +303,11 @@ private extension VCHTTPNetworkingTests {
     }
 
     func disabled_test_empty_response() {
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
+
+        let requestBuilder = RequestBuilder(
+            configuration: .init(baseURL: URL(string: "http://www.mocky.io/v2/5e1007c835000068001e687f")!)
+        )
+
         let request: Request<Success> = requestBuilder.method(.get).build()
 
         let exp = expectation(description: "getting another response")
@@ -310,8 +328,13 @@ private extension VCHTTPNetworkingTests {
 
         let actions = [401: [{ expectation.fulfill() }]]
 
-        let requestBuilder = RequestBuilder(baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
-                                            responseActionsProvider: ResponseActionsProviderMock(actions))
+        
+        let requestBuilder = RequestBuilder(
+            configuration: .init(
+                baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
+                responseActionsProvider: ResponseActionsProviderMock(actions)
+            )
+        )
 
         let request: Request<TestResponse> = requestBuilder.method(.get).build()
         request.start { _ in }

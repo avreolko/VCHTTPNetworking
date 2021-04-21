@@ -36,6 +36,29 @@ public enum HTTPMethod: String
 
 public final class RequestBuilder {
 
+    public struct Configuration {
+
+        let baseURL: URL
+        let encoder: IDataEncoder
+        let decoder: IDataDecoder
+        let applicationsProvider: IRequestBuilderApplicationsProvider?
+        let responseActionsProvider: IResponseActionsProvider?
+
+        public init(
+            baseURL: URL,
+            encoder: IDataEncoder = JSONEncoder(),
+            decoder: IDataDecoder = JSONDecoder(),
+            applicationsProvider: IRequestBuilderApplicationsProvider? = nil,
+            responseActionsProvider: IResponseActionsProvider? = nil
+        ) {
+            self.baseURL = baseURL
+            self.encoder = encoder
+            self.decoder = decoder
+            self.applicationsProvider = applicationsProvider
+            self.responseActionsProvider = responseActionsProvider
+        }
+    }
+
     private struct BuildInfo {
 
         enum Mocking {
@@ -54,27 +77,13 @@ public final class RequestBuilder {
         var pinnedCertificatesProvider: ICertificatesProvider?
     }
 
+    private let configuration: Configuration
     private var buildInfo: BuildInfo
 
-    private let baseURL: URL
-    private let encoder: IDataEncoder
-    private let decoder: IDataDecoder
-    private let applicationsProvider: IRequestBuilderApplicationsProvider?
-    private let responseActionsProvider: IResponseActionsProvider?
+    public init(configuration: Configuration) {
 
-    public init(baseURL: URL,
-                encoder: IDataEncoder = JSONEncoder(),
-                decoder: IDataDecoder = JSONDecoder(),
-                applicationsProvider: IRequestBuilderApplicationsProvider? = nil,
-                responseActionsProvider: IResponseActionsProvider? = nil) {
-
-        self.buildInfo = BuildInfo(url: baseURL)
-
-        self.baseURL = baseURL
-        self.encoder = encoder
-        self.decoder = decoder
-        self.applicationsProvider = applicationsProvider
-        self.responseActionsProvider = responseActionsProvider
+        self.configuration = configuration
+        self.buildInfo = BuildInfo(url: configuration.baseURL)
     }
 
     @discardableResult
@@ -138,7 +147,8 @@ public final class RequestBuilder {
 
     @discardableResult
     public func encode<T: Encodable>(_ query: T) -> Self {
-        buildInfo.encodeAction = { [encoder] in try? encoder.encode(query) }
+        let encoder = configuration.encoder
+        buildInfo.encodeAction = { try? encoder.encode(query) }
         return self
     }
 
@@ -171,7 +181,7 @@ public final class RequestBuilder {
 
         defer { self.reset() }
 
-        self.applicationsProvider?.applications.forEach { $0(self) }
+        self.configuration.applicationsProvider?.applications.forEach { $0(self) }
 
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)
@@ -197,13 +207,15 @@ public final class RequestBuilder {
             }
         }
 
-        return Request(dataTask: makeDataTask(),
-                       responseCodeActions: self.responseActionsProvider?.actions ?? [:])
+        return Request(
+            dataTask: makeDataTask(),
+            responseCodeActions: self.configuration.responseActionsProvider?.actions ?? [:]
+        )
     }
 
     @discardableResult
     internal func reset() -> Self {
-        self.buildInfo = BuildInfo(url: self.baseURL)
+        self.buildInfo = BuildInfo(url: self.configuration.baseURL)
         return self
     }
 }
