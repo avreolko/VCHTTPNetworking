@@ -41,21 +41,15 @@ public final class RequestBuilder {
         let baseURL: URL
         let encoder: IDataEncoder
         let decoder: IDataDecoder
-        let applicationsProvider: IRequestBuilderApplicationsProvider?
-        let responseActionsProvider: IResponseActionsProvider?
 
         public init(
             baseURL: URL,
             encoder: IDataEncoder = JSONEncoder(),
-            decoder: IDataDecoder = JSONDecoder(),
-            applicationsProvider: IRequestBuilderApplicationsProvider? = nil,
-            responseActionsProvider: IResponseActionsProvider? = nil
+            decoder: IDataDecoder = JSONDecoder()
         ) {
             self.baseURL = baseURL
             self.encoder = encoder
             self.decoder = decoder
-            self.applicationsProvider = applicationsProvider
-            self.responseActionsProvider = responseActionsProvider
         }
     }
 
@@ -181,8 +175,6 @@ public final class RequestBuilder {
 
         defer { self.reset() }
 
-        self.configuration.applicationsProvider?.applications.forEach { $0(self) }
-
         let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
         var request = URLRequest(url: fullURL)
 
@@ -209,8 +201,7 @@ public final class RequestBuilder {
 
         return Request(
             dataTask: makeDataTask(),
-            decoder: configuration.decoder,
-            responseCodeActions: self.configuration.responseActionsProvider?.actions ?? [:]
+            decoder: configuration.decoder
         )
     }
 

@@ -166,33 +166,6 @@ final class VCHTTPNetworkingTests: XCTestCase {
         XCTAssertEqual(header!, "OAuth \(token)")
     }
 
-    func test_common_applications() {
-
-        let headers = ["Omae Wa Mou Shindeiru": "Nani?!"]
-
-        let application: RequestBuilderApplication = { builder in
-            builder.headers(headers)
-        }
-
-        let requestBuilder = RequestBuilder(
-            configuration: .init(
-                baseURL: URL(string: "http://www.mocky.io/")!,
-                applicationsProvider: RequestBuilderApplicationsProviderMock([application])
-            )
-        )
-
-        let request1: Request<TestResponse> = requestBuilder.build()
-        requestBuilder.reset()
-        let request2: Request<TestResponse> = requestBuilder.build()
-
-        let headerFrom: (Request<TestResponse>) -> String? = {
-            return ($0.dataTask as! DataTask).request.allHTTPHeaderFields?[headers.keys.first!]
-        }
-
-        XCTAssertEqual(headerFrom(request1), headers.values.first!)
-        XCTAssertEqual(headerFrom(request2), headers.values.first!)
-    }
-
     func test_mocking() throws {
 
         let expectation = self.expectation(description: "getting response")
@@ -320,44 +293,5 @@ extension VCHTTPNetworkingTests {
         }
 
         waitForExpectations(timeout: 1)
-    }
-
-    func disabled_test_response_code_actions() {
-
-        let expectation = self.expectation(description: "getting response")
-
-        let actions = [401: [{ expectation.fulfill() }]]
-
-        
-        let requestBuilder = RequestBuilder(
-            configuration: .init(
-                baseURL: URL(string: "http://www.mocky.io/v2/5e8077463000002d006f94b1")!,
-                responseActionsProvider: ResponseActionsProviderMock(actions)
-            )
-        )
-
-        let request: Request<TestResponse> = requestBuilder.method(.get).build()
-        request.start { _ in }
-
-        waitForExpectations(timeout: 1)
-    }
-}
-
-// MARK: - mocks
-private class RequestBuilderApplicationsProviderMock: IRequestBuilderApplicationsProvider {
-
-    let applications: [RequestBuilderApplication]
-
-    init(_ applications: [RequestBuilderApplication]) {
-        self.applications = applications
-    }
-}
-
-private class ResponseActionsProviderMock: IResponseActionsProvider {
-
-    let actions: [ResponseCode: [Action]]
-
-    init(_ actions: [ResponseCode: [Action]]) {
-        self.actions = actions
     }
 }

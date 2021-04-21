@@ -1,6 +1,6 @@
 //
 //  ICertificatesProvider.swift
-//
+//  VCHTTPNetworking
 //
 //  Created by Valentin Cherepyanko on 03.01.2020.
 //

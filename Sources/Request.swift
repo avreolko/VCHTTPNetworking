@@ -38,17 +38,13 @@ public struct Success: Decodable { public init() { } }
 public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
-
     private let decoder: IDataDecoder
-    private let responseCodeActions: [ResponseCode: [Action]]
 
     init(dataTask: IDataTask,
-         decoder: IDataDecoder,
-         responseCodeActions: [ResponseCode: [Action]]) {
+         decoder: IDataDecoder) {
 
         self.dataTask = dataTask
         self.decoder = decoder
-        self.responseCodeActions = responseCodeActions
     }
 
     public func start(_ completion: @escaping (Result<T, RequestError>) -> Void) {
@@ -67,8 +63,6 @@ public struct Request<T: Decodable> {
 
             // http error
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 200
-
-            self.responseCodeActions[statusCode]?.forEach { action in DispatchQueue.main.async { action() } }
 
             if (300 ... 599) ~= statusCode {
                 completeInMainThread(.failure(.httpError(statusCode)))

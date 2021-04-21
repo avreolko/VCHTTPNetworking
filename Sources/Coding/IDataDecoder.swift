@@ -1,6 +1,6 @@
 //
 //  IDataDecoder.swift
-//  
+//  VCHTTPNetworking
 //
 //  Created by Valentin Cherepyanko on 19.04.2021.
 //
