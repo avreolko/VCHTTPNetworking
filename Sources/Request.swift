@@ -39,12 +39,15 @@ public struct Request<T: Decodable> {
 
     let dataTask: IDataTask
 
+    private let decoder: IDataDecoder
     private let responseCodeActions: [ResponseCode: [Action]]
 
     init(dataTask: IDataTask,
+         decoder: IDataDecoder,
          responseCodeActions: [ResponseCode: [Action]]) {
 
         self.dataTask = dataTask
+        self.decoder = decoder
         self.responseCodeActions = responseCodeActions
     }
 
@@ -86,13 +89,8 @@ public struct Request<T: Decodable> {
 private extension Request {
     func decode<T: Decodable>(_ data: Data) -> Result<T, RequestError> {
 
-        let data = (T.self == Success.self)
-            ? "{}".data(using: .utf8)!
-            : data
-
-        let decoder = JSONDecoder()
         do {
-            return .success(try decoder.decode(T.self, from: data))
+            return .success(try self.decoder.decode(T.self, from: data))
         } catch {
             return .failure(.decodingError(error, data))
         }

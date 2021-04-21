@@ -209,6 +209,7 @@ public final class RequestBuilder {
 
         return Request(
             dataTask: makeDataTask(),
+            decoder: configuration.decoder,
             responseCodeActions: self.configuration.responseActionsProvider?.actions ?? [:]
         )
     }
