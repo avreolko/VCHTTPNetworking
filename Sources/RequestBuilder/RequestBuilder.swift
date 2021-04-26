@@ -39,7 +39,7 @@ public enum HTTPMethod: String
     case patch = "PATCH"
 }
 
-public final class RequestBuilder {
+public final class RequestBuilder: IRequestBuilder {
 
     public struct Configuration {
 
@@ -70,7 +70,6 @@ public final class RequestBuilder {
         var url: URL
         var method: HTTPMethod = .get
         var headers: [String: String] = [:]
-        var encodedBody: Data?
         var encodedPath: String = ""
         var mocking: Mocking = .none
         var encodeAction: (() -> Data?)?
@@ -147,7 +146,7 @@ public final class RequestBuilder {
 
     @discardableResult
     public func formEncode<T: Encodable>(_ query: T) -> Self {
-        self.buildInfo.encodedBody = query.urlEncoded?.data(using: .utf8)
+        self.buildInfo.encodeAction = { query.urlEncoded?.data(using: .utf8) }
         return self
     }
 
@@ -197,7 +196,6 @@ public final class RequestBuilder {
         var request = URLRequest(url: fullURL)
 
         request.httpMethod = self.buildInfo.method.rawValue
-        request.httpBody = self.buildInfo.encodedBody
 
         self.buildInfo.headers.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)

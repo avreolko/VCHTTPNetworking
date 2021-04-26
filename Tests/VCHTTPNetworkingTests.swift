@@ -140,14 +140,25 @@ final class VCHTTPNetworkingTests: XCTestCase {
     }
 
     func test_form_encoding() {
-        let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
-        let urlRequest = (request.dataTask as! DataTask).request
-        let bodyString = String(data: urlRequest.httpBody!, encoding: .utf8)!
 
-        // because dictionary is unordered
-        XCTAssertTrue(bodyString.contains("intValue=8"))
-        XCTAssertTrue(bodyString.contains("stringValue=hi"))
-        XCTAssertTrue(bodyString.contains("&"))
+        let expectation = self.expectation(description: "getting response")
+
+        let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
+
+        request.start { _ in
+
+            expectation.fulfill()
+
+            let urlRequest = (request.dataTask as! DataTask).request
+            let bodyString = String(data: urlRequest.httpBody!, encoding: .utf8)!
+
+            // because dictionary is unordered
+            XCTAssertTrue(bodyString.contains("intValue=8"))
+            XCTAssertTrue(bodyString.contains("stringValue=hi"))
+            XCTAssertTrue(bodyString.contains("&"))
+        }
+
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
 
     func test_basic_auth() {
