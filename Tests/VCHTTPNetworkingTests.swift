@@ -303,7 +303,7 @@ final class VCHTTPNetworkingTests: XCTestCase {
             .build()
 
         let headers = (request.dataTask as! DataTask).request.allHTTPHeaderFields ?? [:]
-        
+
         XCTAssertTrue(headers.contains(where: { $0 == "header1" && $1 == "1" }))
         XCTAssertTrue(headers.contains(where: { $0 == "header2" && $1 == "2" }))
         XCTAssertTrue(headers.contains(where: { $0 == "header3" && $1 == "3" }))

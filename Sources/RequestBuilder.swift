@@ -76,6 +76,7 @@ public final class RequestBuilder {
         var encodeAction: (() -> Data?)?
         var identityProvider: IIdentityProvider?
         var pinnedCertificatesProvider: ICertificatesProvider?
+        var sessionConfiguration: URLSessionConfiguration = .default
     }
 
     private var buildInfo: BuildInfo
@@ -158,6 +159,12 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func session(is configuredAs: URLSessionConfiguration) -> Self {
+        buildInfo.sessionConfiguration = configuredAs
+        return self
+    }
+
+    @discardableResult
     public func urlEncode<T: Encodable>(_ query: T) -> Self {
         guard let dict = query.dictionary else {
             return self
@@ -202,6 +209,7 @@ public final class RequestBuilder {
                 return DataTask(
                     request: request,
                     encodeAction: self.buildInfo.encodeAction,
+                    sessionConfiguration: self.buildInfo.sessionConfiguration,
                     pinnedCertificatesProvider: self.buildInfo.pinnedCertificatesProvider,
                     identityProvider: self.buildInfo.identityProvider
                 )

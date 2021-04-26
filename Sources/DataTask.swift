@@ -42,20 +42,23 @@ struct MockedDataTask: IDataTask {
 
 final class DataTask: NSObject, IDataTask {
 
-    private lazy var session = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+    private lazy var session = URLSession(configuration: self.sessionConfiguration, delegate: self, delegateQueue: nil)
 
     private(set) var request: URLRequest
     private let encodeAction: (() -> Data?)?
+    private let sessionConfiguration: URLSessionConfiguration
     private let pinnedCertificatesProvider: ICertificatesProvider?
     private let identityProvider: IIdentityProvider?
 
     init(request: URLRequest,
          encodeAction: (() -> Data?)? = nil,
+         sessionConfiguration: URLSessionConfiguration,
          pinnedCertificatesProvider: ICertificatesProvider? = nil,
          identityProvider: IIdentityProvider? = nil) {
 
         self.request = request
         self.encodeAction = encodeAction
+        self.sessionConfiguration = sessionConfiguration
         self.pinnedCertificatesProvider = pinnedCertificatesProvider
         self.identityProvider = identityProvider
     }
