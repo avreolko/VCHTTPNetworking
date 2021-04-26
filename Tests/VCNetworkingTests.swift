@@ -3,7 +3,6 @@
 //  VCHTTPNetworking
 //
 //  Created by Valentin Cherepyanko on 03.01.2020.
-//  Copyright © 2020 Valentin Cherepyanko. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -63,16 +62,37 @@ final class VCHTTPNetworkingTests: XCTestCase {
     }
 
     func test_http_methods() {
+
         let mapToUrlRequest: (Request<Success>) -> URLRequest = { request in
             return (request.dataTask as! DataTask).request
         }
 
         let getRequest: Request<Success> = self.requestBuilder.method(.get).build()
         XCTAssertEqual(mapToUrlRequest(getRequest).httpMethod, "GET")
+
         let postRequest: Request<Success> = self.requestBuilder.method(.post).build()
         XCTAssertEqual(mapToUrlRequest(postRequest).httpMethod, "POST")
+
         let deleteRequest: Request<Success> = self.requestBuilder.method(.delete).build()
         XCTAssertEqual(mapToUrlRequest(deleteRequest).httpMethod, "DELETE")
+
+        let headRequest: Request<Success> = self.requestBuilder.method(.head).build()
+        XCTAssertEqual(mapToUrlRequest(headRequest).httpMethod, "HEAD")
+
+        let putRequest: Request<Success> = self.requestBuilder.method(.put).build()
+        XCTAssertEqual(mapToUrlRequest(putRequest).httpMethod, "PUT")
+
+        let connectRequest: Request<Success> = self.requestBuilder.method(.connect).build()
+        XCTAssertEqual(mapToUrlRequest(connectRequest).httpMethod, "CONNECT")
+
+        let optionsRequest: Request<Success> = self.requestBuilder.method(.options).build()
+        XCTAssertEqual(mapToUrlRequest(optionsRequest).httpMethod, "OPTIONS")
+
+        let traceRequest: Request<Success> = self.requestBuilder.method(.trace).build()
+        XCTAssertEqual(mapToUrlRequest(traceRequest).httpMethod, "TRACE")
+
+        let patchRequest: Request<Success> = self.requestBuilder.method(.patch).build()
+        XCTAssertEqual(mapToUrlRequest(patchRequest).httpMethod, "PATCH")
     }
 
     func test_url_encoding() throws {
@@ -249,6 +269,22 @@ final class VCHTTPNetworkingTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 1)
+    }
+
+    func test_content_type_header_setting() {
+
+        let mapToUrlRequest: (Request<Success>) -> URLRequest = { request in
+            return (request.dataTask as! DataTask).request
+        }
+
+        let jsonRequest: Request<Success> = self.requestBuilder.contentType(.json).build()
+        XCTAssertEqual(mapToUrlRequest(jsonRequest).allHTTPHeaderFields?["Content-Type"], "application/json")
+
+        let xmlRequest: Request<Success> = self.requestBuilder.contentType(.xml).build()
+        XCTAssertEqual(mapToUrlRequest(xmlRequest).allHTTPHeaderFields?["Content-Type"], "application/xml")
+
+        let formRequest: Request<Success> = self.requestBuilder.contentType(.form).build()
+        XCTAssertEqual(mapToUrlRequest(formRequest).allHTTPHeaderFields?["Content-Type"], "application/x-www-form-urlencoded")
     }
 }
 

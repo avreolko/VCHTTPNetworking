@@ -36,7 +36,7 @@ public enum HTTPMethod: String
     case connect = "CONNECT"
     case options = "OPTIONS"
     case trace = "TRACE"
-    case PATCH = "PATCH"
+    case patch = "PATCH"
 }
 
 public final class RequestBuilder {
@@ -58,6 +58,8 @@ public final class RequestBuilder {
         }
     }
 
+    private let configuration: Configuration
+
     private struct BuildInfo {
 
         enum Mocking {
@@ -76,7 +78,6 @@ public final class RequestBuilder {
         var pinnedCertificatesProvider: ICertificatesProvider?
     }
 
-    private let configuration: Configuration
     private var buildInfo: BuildInfo
 
     public init(configuration: Configuration) {
@@ -138,8 +139,13 @@ public final class RequestBuilder {
     }
 
     @discardableResult
+    public func contentType(_ contentType: ContentType) -> Self {
+        self.buildInfo.headers["Content-Type"] = contentType.rawValue
+        return self
+    }
+
+    @discardableResult
     public func formEncode<T: Encodable>(_ query: T) -> Self {
-        self.buildInfo.headers["Content-Type"] = "application/x-www-form-urlencoded forHTTPHeaderField"
         self.buildInfo.encodedBody = query.urlEncoded?.data(using: .utf8)
         return self
     }
