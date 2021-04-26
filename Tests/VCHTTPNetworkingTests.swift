@@ -1,5 +1,5 @@
 //
-//  VCHTTPNetworking.swift
+//  VCHTTPNetworkingTests.swift
 //  VCHTTPNetworking
 //
 //  Created by Valentin Cherepyanko on 03.01.2020.
@@ -285,6 +285,30 @@ final class VCHTTPNetworkingTests: XCTestCase {
 
         let formRequest: Request<Success> = self.requestBuilder.contentType(.form).build()
         XCTAssertEqual(mapToUrlRequest(formRequest).allHTTPHeaderFields?["Content-Type"], "application/x-www-form-urlencoded")
+    }
+
+    func test_headers_merging() {
+
+        let request: Request<Success> = self.requestBuilder
+            .headers([
+                "header1": "1",
+                "header2": "2",
+                "header3": "false"
+            ])
+            .headers([
+                "header3": "3",
+                "header4": "4",
+                "header5": "5"
+            ])
+            .build()
+
+        let headers = (request.dataTask as! DataTask).request.allHTTPHeaderFields ?? [:]
+        
+        XCTAssertTrue(headers.contains(where: { $0 == "header1" && $1 == "1" }))
+        XCTAssertTrue(headers.contains(where: { $0 == "header2" && $1 == "2" }))
+        XCTAssertTrue(headers.contains(where: { $0 == "header3" && $1 == "3" }))
+        XCTAssertTrue(headers.contains(where: { $0 == "header4" && $1 == "4" }))
+        XCTAssertTrue(headers.contains(where: { $0 == "header5" && $1 == "5" }))
     }
 }
 
