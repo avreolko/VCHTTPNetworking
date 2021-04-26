@@ -26,6 +26,49 @@
 
 import Foundation
 
-protocol IRequestBuilder {
-    
+public protocol IRequestBuilder {
+
+    @discardableResult
+    func basicAuth(login: String, pass: String) -> Self
+
+    @discardableResult
+    func bearerAuth(with token: String) -> Self
+
+    @discardableResult
+    func oAuth(with token: String) -> Self
+
+    @discardableResult
+    func auth(with identityProvider: IIdentityProvider) -> Self
+
+    @discardableResult
+    func sslPin(with certificatesProvider: ICertificatesProvider) -> Self
+
+    @discardableResult
+    func method(_ method: HTTPMethod) -> Self
+
+    @discardableResult
+    func path(_ path: String) -> Self
+
+    @discardableResult
+    func headers(_ headers: [String: String]) -> Self
+
+    @discardableResult
+    func contentType(_ contentType: ContentType) -> Self
+
+    @discardableResult
+    func formEncode<T: Encodable>(_ query: T) -> Self
+
+    @discardableResult
+    func encode<T: Encodable>(_ query: T) -> Self
+
+    @discardableResult
+    func session(is configuredAs: URLSessionConfiguration) -> Self
+
+    @discardableResult
+    func urlEncode<T: Encodable>(_ query: T) -> Self
+
+    @discardableResult
+    func mockResponse(data: Data?, error: Error?) -> Self
+
+    func build<T: Decodable>() -> Request<T>
 }
