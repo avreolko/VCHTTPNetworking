@@ -1,3 +1,5 @@
+![Tests](https://github.com/avreolko/VCHTTPNetworking/workflows/Tests/badge.svg?branch=master)
+
 # VCHTTPNetworking
 A simple declarative builder for your network requests
 
@@ -26,6 +28,12 @@ request.start { result in
 
 The request holds a strong reference to itself until a response.
 If you need lifecycle management for your async operations, you can use promises.
+
+## Features
+- SSL-pinning
+- Response mocking
+- Support of multiple authorization types. Certificate / OAuth / basic / bearer.
+- Custom coding support. Default is `JSONEncoder` / `JSONDecoder`.
 
 ## License ##
 This project is released under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
