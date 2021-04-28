@@ -1,4 +1,4 @@
-[![Tests](https://github.com/avreolko/VCHTTPNetworking/workflows/Tests/badge.svg?branch=master)](https://github.com/avreolko/VCHTTPNetworking/actions/workflows/swift.yml)
+[![Tests](https://github.com/avreolko/VCHTTPNetworking/workflows/Tests/badge.svg?branch=master)](https://github.com/avreolko/VCHTTPNetworking/actions/workflows/tests.yml)
 
 # VCHTTPNetworking
 A simple declarative builder for your network requests
