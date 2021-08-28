@@ -76,6 +76,7 @@ public final class RequestBuilder: IRequestBuilder {
         var identityProvider: IIdentityProvider?
         var pinnedCertificatesProvider: ICertificatesProvider?
         var sessionConfiguration: URLSessionConfiguration = .default
+        var timeout: TimeInterval = 60
     }
 
     private var buildInfo: BuildInfo
@@ -164,6 +165,12 @@ public final class RequestBuilder: IRequestBuilder {
     }
 
     @discardableResult
+    public func timeout(_ value: TimeInterval) -> Self {
+        self.buildInfo.timeout = value
+        return self
+    }
+
+    @discardableResult
     public func urlEncode<T: Encodable>(_ query: T) -> Self {
         guard let dict = query.dictionary else {
             return self
@@ -196,6 +203,7 @@ public final class RequestBuilder: IRequestBuilder {
         var request = URLRequest(url: fullURL)
 
         request.httpMethod = self.buildInfo.method.rawValue
+        request.timeoutInterval = buildInfo.timeout
 
         self.buildInfo.headers.forEach { key, value in
             request.addValue(value, forHTTPHeaderField: key)

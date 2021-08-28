@@ -65,6 +65,9 @@ public protocol IRequestBuilder {
     func session(is configuredAs: URLSessionConfiguration) -> Self
 
     @discardableResult
+    func timeout(_ value: TimeInterval) -> Self
+
+    @discardableResult
     func urlEncode<T: Encodable>(_ query: T) -> Self
 
     @discardableResult
