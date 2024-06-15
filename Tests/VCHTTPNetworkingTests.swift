@@ -56,8 +56,14 @@ final class VCHTTPNetworkingTests: XCTestCase {
     private var requestBuilder: RequestBuilder!
 
     override func setUp() {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = [.sortedKeys]
+
         self.requestBuilder = RequestBuilder(
-            configuration: .init(baseURL: URL(string: "https://httpstat.us")!)
+            configuration: .init(
+                baseURL: URL(string: "https://httpstat.us")!,
+                encoder: jsonEncoder
+            )
         )
     }
 
@@ -101,7 +107,7 @@ final class VCHTTPNetworkingTests: XCTestCase {
 
         // because dictionary is unordered
         let absolutePath = try XCTUnwrap(urlRequest.url?.absoluteString)
-        XCTAssertTrue(absolutePath.contains("https://httpstat.us/?"))
+        XCTAssertTrue(absolutePath.contains("https://httpstat.us?"))
         XCTAssertTrue(absolutePath.contains("intValue=8"))
         XCTAssertTrue(absolutePath.contains("stringValue=hi"))
         XCTAssertTrue(absolutePath.contains("boolValue=1"))
@@ -118,6 +124,7 @@ final class VCHTTPNetworkingTests: XCTestCase {
         // Act
         let request: Request<Success> = requestBuilder
             .encode(query)
+            .timeout(0.5)
             .build()
 
         request.start { _ in
@@ -132,7 +139,7 @@ final class VCHTTPNetworkingTests: XCTestCase {
 
             XCTAssertEqual(
                 jsonString,
-                "{\"intValue\":8,\"boolValue\":true,\"stringValue\":\"hi\"}"
+                "{\"boolValue\":true,\"intValue\":8,\"stringValue\":\"hi\"}"
             )
         }
 
@@ -143,7 +150,10 @@ final class VCHTTPNetworkingTests: XCTestCase {
 
         let expectation = self.expectation(description: "getting response")
 
-        let request: Request<Success> = self.requestBuilder.formEncode(TestQuery.default).build()
+        let request: Request<Success> = self.requestBuilder
+            .formEncode(TestQuery.default)
+            .timeout(0.5)
+            .build()
 
         request.start { _ in
 
@@ -233,7 +243,7 @@ final class VCHTTPNetworkingTests: XCTestCase {
 
         let task = try XCTUnwrap(request.dataTask as? DataTask)
 
-        XCTAssertEqual("https://httpstat.us/somePath/", task.request.url?.absoluteString)
+        XCTAssertEqual("https://httpstat.us/somePath", task.request.url?.absoluteString)
     }
 
     func test_service_empty_data_error() {

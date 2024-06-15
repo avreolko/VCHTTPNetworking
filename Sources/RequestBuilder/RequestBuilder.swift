@@ -199,7 +199,14 @@ public final class RequestBuilder: IRequestBuilder {
 
         defer { self.reset() }
 
-        let fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
+        let fullURL: URL
+
+        if self.buildInfo.encodedPath.isEmpty {
+            fullURL = self.buildInfo.url
+        } else {
+            fullURL = self.buildInfo.url.appendingPathComponent(self.buildInfo.encodedPath)
+        }
+
         var request = URLRequest(url: fullURL)
 
         request.httpMethod = self.buildInfo.method.rawValue
