@@ -28,7 +28,7 @@ import Foundation
 
 public enum RequestError: Error {
     case serviceError(Error)
-    case httpError(Int)
+    case httpError(Int, Data?)
     case decodingError(Error, Data)
     case unexpectedEmptyDataError
 }
@@ -65,7 +65,7 @@ public struct Request<T: Decodable> {
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 200
 
             if (300 ... 599) ~= statusCode {
-                completeInMainThread(.failure(.httpError(statusCode)))
+                completeInMainThread(.failure(.httpError(statusCode, data)))
                 return
             }
 
@@ -81,10 +81,9 @@ public struct Request<T: Decodable> {
 }
 
 private extension Request {
-    func decode<T: Decodable>(_ data: Data) -> Result<T, RequestError> {
-
+    func decode<Response: Decodable>(_ data: Data) -> Result<Response, RequestError> {
         do {
-            return .success(try self.decoder.decode(T.self, from: data))
+            return .success(try self.decoder.decode(Response.self, from: data))
         } catch {
             return .failure(.decodingError(error, data))
         }
